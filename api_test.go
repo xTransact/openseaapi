@@ -25,6 +25,18 @@ func TestGetListings(t *testing.T) {
 	fmt.Println(string(listings.ToJson()))
 }
 
+func TestGetTestListings(t *testing.T) {
+	cli := NewClient()
+	listings, err := cli.GetListings(context.Background(), chain.Goerli, &openseamodels.GetListingsPayload{
+		AssetContractAddress: openseaapiutils.StringPtr("0xb31d6b5516eed64a874e9f7ab605e359e20b645f"),
+		TokenIDs: []int{
+			10,
+		},
+	})
+	require.NoError(t, err)
+	fmt.Println(string(listings.ToJson()))
+}
+
 func getTestApiKey() string {
 	return os.Getenv("OPENSEA_API_KEY")
 }
