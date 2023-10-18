@@ -3,7 +3,6 @@ package openseamodels
 import (
 	"encoding/json"
 	"errors"
-	"math/big"
 	"net/url"
 	"slices"
 	"strconv"
@@ -349,29 +348,4 @@ type CollectionListing struct {
 
 type BasicListingPrice struct {
 	Current *Current `json:"currenty"`
-}
-
-type ListingsFulfillmentData struct {
-	Protocol        string           `json:"protocol"`
-	FulfillmentData *FulfillmentData `json:"fulfillment_data"`
-}
-
-type FulfillmentData struct {
-	//  Transaction: required: The name of the fulfillment method and associated call data.
-	Transaction *FulfillmentTransaction `json:"transaction"`
-	// Orders: required: Array of Seaport Orders.
-	Orders []*Order `json:"orders"`
-}
-
-type FulfillmentTransaction struct {
-	// Function: required: Seaport protocol contract method to use to fulfill the order
-	Function string `json:"function"`
-	// Chain: required: Numeric Chain Identifier
-	Chain int `json:"chain"`
-	// To: required: Protocol contract address to use fto fulfill the order.
-	To string `json:"to"`
-	// Value: required: Wei value of the transaction
-	Value *big.Int `json:"value"`
-	// InputData: required: Decoded Call Data.
-	InputData *InputDataParameters `json:"input_data"`
 }

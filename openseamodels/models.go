@@ -1,6 +1,7 @@
 package openseamodels
 
 import (
+	"encoding/json"
 	"errors"
 	"math/big"
 	"net/url"
@@ -112,6 +113,14 @@ type Order struct {
 	Signature string `json:"signature"`
 }
 
+type AdvancedOrder struct {
+	*Order
+
+	Numerator   uint64 `json:"numerator,omitempty"`
+	Denominator uint64 `json:"denominator,omitempty"`
+	ExtraData   string `json:"extraData,omitempty"`
+}
+
 type BaseOfferAndConsideration struct {
 	ItemType openseaenums.ItemType `json:"itemType"`
 	// Token: required: The item's token contract (with the null address used for native tokens)
@@ -160,7 +169,7 @@ type Offer struct {
 	*BaseOfferAndConsideration
 }
 
-type InputDataParameters struct {
+type InputDataBasicOrderParameters struct {
 	Parameters *BasicOrderParameters `json:"parameters"`
 }
 
@@ -236,7 +245,7 @@ type Parameters struct {
 	ConduitKey string `json:"conduitKey"`
 	// TotalOriginalConsiderationItems: required: Size of the consideration array.
 	TotalOriginalConsiderationItems int `json:"totalOriginalConsiderationItems"`
-	Counter                         any `json:"counter"` // any could be an integer or string
+	Counter                         any `json:"counter,omitempty"` // any could be an integer or string
 }
 
 type Identifier struct {
@@ -259,4 +268,41 @@ type Identifier struct {
 type Fee struct {
 	Account     *Identifier `json:"account"`
 	BasisPoints string      `json:"basis_points"`
+}
+
+// ReceivedItem is an auto generated low-level Go binding around an user-defined struct.
+type ReceivedItem struct {
+	ItemType   uint8          `json:"itemType"`
+	Token      common.Address `json:"token"`
+	Identifier json.Number    `json:"identifier"`
+	Amount     json.Number    `json:"amount"`
+	Recipient  common.Address `json:"recipient"`
+}
+
+// CriteriaResolver is an auto generated low-level Go binding around an user-defined struct.
+type CriteriaResolver struct {
+	OrderIndex    json.Number            `json:"orderIndex"`
+	Side          openseaenums.OrderSide `json:"side"`
+	Index         json.Number            `json:"index"`
+	Identifier    json.Number            `json:"identifier"`
+	CriteriaProof []string               `json:"criteriaProof"`
+}
+
+// Execution is an auto generated low-level Go binding around an user-defined struct.
+type Execution struct {
+	Item       ReceivedItem   `json:"item"`
+	Offerer    common.Address `json:"offerer"`
+	ConduitKey string         `json:"conduitKey"`
+}
+
+// Fulfillment is an auto generated low-level Go binding around an user-defined struct.
+type Fulfillment struct {
+	OfferComponents         []FulfillmentComponent `json:"offerComponents"`
+	ConsiderationComponents []FulfillmentComponent `json:"considerationComponents"`
+}
+
+// FulfillmentComponent is an auto generated low-level Go binding around an user-defined struct.
+type FulfillmentComponent struct {
+	OrderIndex json.Number `json:"orderIndex"`
+	ItemIndex  json.Number `json:"itemIndex"`
 }

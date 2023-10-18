@@ -60,7 +60,7 @@ type Servicer interface {
 		payload *openseamodels.CreateListingPayload) (resp *openseamodels.CreateListingResponse, err error)
 	// FulfillListing retrieves all the information, including signatures, needed to fulfill a listing directly onchain.
 	FulfillListing(ctx context.Context, ch chain.Chain,
-		orderHash, fulfiller string) (resp *openseamodels.ListingsFulfillmentData, err error)
+		orderHash, fulfiller string) (resp *openseamodels.FulfillmentDataResponse, err error)
 	// FulfillOffer
 
 	// GetAllListingsByCollection gets all active, valid listings for a single collection.

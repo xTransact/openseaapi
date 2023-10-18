@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
@@ -138,60 +137,6 @@ func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
 	}
 
 	resp = new(openseamodels.CreateListingResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
-	}
-
-	return resp, nil
-}
-
-// FulfillListing retrieves all the information, including signatures, needed to fulfill a listing directly onchain.
-// @Param orderHash: required: hash of the order to fulfill.
-// @Param ch (chain.Chain): required
-// @Param: fulfiller: required: fulfiller address
-func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
-	orderHash, fulfiller string) (resp *openseamodels.ListingsFulfillmentData, err error) {
-
-	if orderHash == "" || fulfiller == "" || ch < 0 {
-		return nil, errors.New("illegal arguments: nil")
-	}
-
-	payload := &openseamodels.FulfillListingPayload{
-		Listing: &openseamodels.FulfillListingPayloadListing{
-			Hash:            orderHash,
-			Chain:           ch.Value(),
-			ProtocolAddress: openseaconsts.SeaportV15Address.String(),
-		},
-		FulFiller: &openseamodels.FulfillListingPayloadFulfiller{
-			Address: fulfiller,
-		},
-	}
-
-	payloadData, err := json.Marshal(payload)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal payload: %w", err)
-	}
-
-	// POST /api/v2/listings/fulfillment_data
-	url := fmt.Sprintf("%s/api/v2/listings/fulfillment_data", openseaapiutils.GetBaseURLByChain(ch))
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
-	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
-	}
-
-	c.acceptJson(req)
-	c.contentTypeJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
-	if err != nil {
-		return nil, err
-	}
-
-	resp = new(openseamodels.ListingsFulfillmentData)
 	if err = json.Unmarshal(body, &resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}

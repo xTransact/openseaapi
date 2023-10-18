@@ -26,6 +26,13 @@ const (
 	OrderTypeContract
 )
 
+type OrderSide uint8
+
+const (
+	OrderSideBuy OrderSide = 0
+	OrderSideSell
+)
+
 type Type int
 
 const (
