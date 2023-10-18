@@ -6,6 +6,8 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/xTransact/openseaapi/openseaapiutils"
 )
 
 type FulfillmentDataResponse struct {
@@ -116,6 +118,10 @@ type MatchAdvancedOrdersInputData struct {
 	CriteriaResolvers []CriteriaResolver `json:"criteriaResolvers"`
 	Fulfillments      []Fulfillment      `json:"fulfillments"`
 	Recipient         common.Address     `json:"recipient"`
+}
+
+func (t *FulfillmentTransaction) FunctionName() string {
+	return openseaapiutils.GetMethod(t.Function)
 }
 
 func (t *FulfillmentTransaction) ParseInputDataToBasicOrder() (p *InputDataBasicOrderParameters, err error) {
