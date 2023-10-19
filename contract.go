@@ -35,11 +35,7 @@ func (c *client) GetContract(ctx context.Context, ch chain.Chain, address common
 	}
 
 	c.acceptJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}

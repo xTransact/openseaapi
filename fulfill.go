@@ -51,11 +51,7 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +93,7 @@ func (c *client) FulfillOffer(ctx context.Context, payload *openseamodels.Fulfil
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}

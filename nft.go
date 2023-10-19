@@ -105,11 +105,7 @@ func (c *client) GetNft(ctx context.Context, ch chain.Chain,
 	}
 
 	c.acceptJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -181,11 +177,7 @@ func (c *client) getNfts(ctx context.Context, url string,
 	}
 
 	c.acceptJson(req)
-	if !testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, testnets)
 	if err != nil {
 		return nil, err
 	}

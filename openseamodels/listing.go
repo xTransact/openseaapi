@@ -50,7 +50,7 @@ type OrderPayload struct {
 	// An array of token IDs to search for (e.g. ?token_ids=1&token_ids=209).
 	// This endpoint will return a list of orders with token_id matching any of the IDs in this array.
 	// NOTE: If used, asset_contract_address is required.
-	TokenIDs []int `query:"token_ids"`
+	TokenIDs []json.Number `query:"token_ids"`
 }
 
 func (p *OrderPayload) Validate() error {
@@ -120,7 +120,7 @@ func (p *OrderPayload) ToQuery() url.Values {
 		q.Set("taker", openseaapiutils.PtrToString(p.Taker))
 	}
 	for _, id := range p.TokenIDs {
-		q.Add("token_ids", strconv.Itoa(id))
+		q.Add("token_ids", id.String())
 	}
 
 	return q

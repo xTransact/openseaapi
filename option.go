@@ -5,6 +5,7 @@ import "time"
 type options struct {
 	apiKey     string
 	privateKey string
+	withHost   map[string]string
 	verbose    bool
 	timeout    time.Duration
 }
@@ -14,6 +15,12 @@ type OptionFn func(*options)
 func WithApiKey(key string) OptionFn {
 	return func(o *options) {
 		o.apiKey = key
+	}
+}
+
+func WithHost(host map[string]string) OptionFn {
+	return func(o *options) {
+		o.withHost = host
 	}
 }
 

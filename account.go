@@ -36,11 +36,7 @@ func (c *client) GetAccount(ctx context.Context, address common.Address,
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}

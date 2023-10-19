@@ -19,8 +19,8 @@ func TestGetListings(t *testing.T) {
 	cli := NewClient(WithApiKey(getTestApiKey()))
 	listings, err := cli.GetListings(context.Background(), chain.Ethereum, &openseamodels.OrderPayload{
 		AssetContractAddress: openseaapiutils.StringPtr("0xed5af388653567af2f388e6224dc7c4b3241c544"), // azuki
-		TokenIDs: []int{
-			4332, 7626,
+		TokenIDs: []json.Number{
+			"4332", "7626",
 		},
 	})
 	require.NoError(t, err)
@@ -31,8 +31,8 @@ func TestGetTestListings(t *testing.T) {
 	cli := NewClient()
 	listings, err := cli.GetListings(context.Background(), chain.Goerli, &openseamodels.OrderPayload{
 		AssetContractAddress: openseaapiutils.StringPtr("0xb31d6b5516eed64a874e9f7ab605e359e20b645f"),
-		TokenIDs: []int{
-			9,
+		TokenIDs: []json.Number{
+			"9",
 		},
 	})
 	require.NoError(t, err)

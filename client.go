@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
-	"golang.org/x/net/http2"
+	utlsclient "github.com/numblab/utls-client"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
@@ -98,12 +99,9 @@ func NewClient(opts ...OptionFn) Servicer {
 		timeout = time.Second * 30
 	}
 
-	httpClient := &http.Client{
-		Timeout: timeout,
-		Transport: &http2.Transport{
-			AllowHTTP: true,
-		},
-	}
+	httpClient := utlsclient.New(
+		utlsclient.WithHost(o.withHost),
+	)
 
 	return &client{
 		config:     o,
@@ -125,8 +123,16 @@ func (c *client) contentTypeJson(r *http.Request) {
 	r.Header.Set("Content-Type", "application/json")
 }
 
-func (c *client) doRequest(r *http.Request) ([]byte, error) {
-	res, err := c.httpClient.Do(r)
+func (c *client) doRequest(r *http.Request, testnets bool) ([]byte, error) {
+	if testnets {
+		// 测试网下关掉长链接
+		r.Header.Set("Connection", "close")
+	} else {
+		// 测试网不需要 API Key，但是主网需要
+		c.challenge(r)
+	}
+
+	res, err := doWithRetry(c.httpClient, r, 5, time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("failed to do request: %w", err)
 	}
@@ -142,4 +148,25 @@ func (c *client) doRequest(r *http.Request) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+// shouldRetry 判断是否需要进行重试
+// 当前仅针对 429 StatusTooManyRequests 进行重试
+func shouldRetry(err error, resp *http.Response) bool {
+	return resp != nil && resp.StatusCode == http.StatusTooManyRequests
+}
+
+func doWithRetry(cli *http.Client, req *http.Request, max int, interval time.Duration) (resp *http.Response, err error) {
+	for i := 0; i < max; i++ {
+		resp, err = cli.Do(req)
+		if !shouldRetry(err, resp) {
+			return
+		}
+		slog.Warn("[OpenSea API] Failed to do http request, attempting retry...",
+			"attempts", i+1,
+			"err", err,
+			"status", resp.Status)
+		time.Sleep(interval)
+	}
+	return
 }

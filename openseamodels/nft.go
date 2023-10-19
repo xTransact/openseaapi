@@ -3,7 +3,6 @@ package openseamodels
 import (
 	"errors"
 	"net/url"
-	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 )
@@ -32,7 +31,7 @@ type Nft struct {
 	// Deprecated Field
 	CreatedAt string `json:"created_at"`
 	// Last time that the NFT's metadata was updated by OpenSea
-	UpdatedAt time.Time `json:"updated_at"`
+	UpdatedAt string `json:"updated_at"`
 	// If the item is currently able to be bought or sold using OpenSea
 	IsDisabled bool `json:"is_disabled"`
 	// If the item is currently classified as 'Not Safe for Work' by OpenSea

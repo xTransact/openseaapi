@@ -42,11 +42,7 @@ func (c *client) BuildOffer(ctx context.Context, payload *openseamodels.BuildOff
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -89,11 +85,7 @@ func (c *client) CreateCriteriaOffer(ctx context.Context, payload *openseamodels
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -131,11 +123,7 @@ func (c *client) CreateIndividualOffer(ctx context.Context, ch chain.Chain,
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -168,11 +156,7 @@ func (c *client) GetCollectionOffers(ctx context.Context, collectionSlug string,
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -214,11 +198,7 @@ func (c *client) GetAllCollectionOffers(ctx context.Context, payload *openseamod
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -255,11 +235,7 @@ func (c *client) GetIndividualOffers(ctx context.Context, ch chain.Chain,
 	}
 
 	c.acceptJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -301,11 +277,7 @@ func (c *client) GetTraitOffers(ctx context.Context, payload *openseamodels.GetT
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}

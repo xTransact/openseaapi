@@ -20,7 +20,8 @@ func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *opens
 	resp *openseamodels.OrdersResponse, err error) {
 
 	// POST /api/v2/orders/{chain}/{protocol}/listings
-	url := fmt.Sprintf("%s/api/v2/orders/%s/%s/listings", openseaapiutils.GetBaseURLByChain(ch), ch.Value(), openseaconsts.ProtocolName)
+	url := fmt.Sprintf("%s/api/v2/orders/%s/%s/listings",
+		openseaapiutils.GetBaseURLByChain(ch), ch.Value(), openseaconsts.ProtocolName)
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
@@ -37,12 +38,9 @@ func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *opens
 			req.URL.RawQuery = qs.Encode()
 		}
 	}
-	c.acceptJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
 
-	body, err := c.doRequest(req)
+	c.acceptJson(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -86,11 +84,7 @@ func (c *client) GetAllListingsByCollection(ctx context.Context, payload *opense
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -127,11 +121,7 @@ func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}

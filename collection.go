@@ -35,11 +35,7 @@ func (c *client) ListCollections(ctx context.Context, payload *openseamodels.Lis
 	}
 
 	c.acceptJson(req)
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
 		return nil, err
 	}
@@ -73,11 +69,7 @@ func (c *client) GetCollection(ctx context.Context, collectionSlug string, opts 
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
@@ -109,11 +101,7 @@ func (c *client) GetCollectionStats(ctx context.Context, collectionSlug string, 
 	}
 
 	c.acceptJson(req)
-	if !o.testnets {
-		c.challenge(req)
-	}
-
-	body, err := c.doRequest(req)
+	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
 		return nil, err
 	}
