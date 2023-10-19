@@ -1,8 +1,8 @@
 package openseaapiutils
 
 import (
+	"encoding/json"
 	"fmt"
-	"math/big"
 	"net/http"
 	"strings"
 
@@ -40,16 +40,15 @@ func ValidateAddress(addr common.Address) bool {
 	return common.IsHexAddress(addr.String())
 }
 
-func ValidateAmount(key string, amount any) error {
-	if amount == nil {
-		return fmt.Errorf("%s must not be nil", key)
+func ValidateJsonNumber(key string, value json.Number) error {
+	if value == "" {
+		return fmt.Errorf("invalid %s: nil", key)
 	}
-	amountStr, ok := amount.(string)
-	if !ok {
-		return fmt.Errorf("invalid %s", key)
+	valueInt64, err := value.Int64()
+	if err != nil {
+		return fmt.Errorf("invalid %s: %w", key, err)
 	}
-	_, ok = new(big.Int).SetString(amountStr, 10)
-	if !ok {
+	if valueInt64 <= 0 {
 		return fmt.Errorf("invalid %s", key)
 	}
 	return nil

@@ -41,7 +41,7 @@ func (c *client) GetTraits(ctx context.Context, collectionSlug string, opts ...R
 	}
 
 	resp = new(openseamodels.Trait)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

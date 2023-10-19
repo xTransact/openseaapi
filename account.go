@@ -46,7 +46,7 @@ func (c *client) GetAccount(ctx context.Context, address common.Address,
 	}
 
 	resp = new(openseamodels.Account)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

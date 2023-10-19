@@ -31,7 +31,7 @@ type Servicer interface {
 		payload *openseamodels.GetNftPayload) (resp *openseamodels.NftResponse, err error)
 	RefreshNftMetadata(ctx context.Context,
 		ch chain.Chain, address common.Address, identifier string) error
-	ListNftsByCollection(ctx context.Context, payload *openseamodels.GetNftsByCollectionPayload,
+	ListNftsByCollection(ctx context.Context, payload *openseamodels.CollectionPayload,
 		opts ...RequestOptionFn) (resp *openseamodels.NftsResponse, err error)
 	ListCollections(ctx context.Context, payload *openseamodels.ListCollectionsPayload) (
 		resp *openseamodels.CollectionsResponse, err error)
@@ -50,31 +50,36 @@ type Servicer interface {
 
 	/* OpenSea Marketplace Endpoints */
 
-	// BuildOffer
-	// GetCollectionOffers
-	// CreateCriteriaOffer
-	// CreateIndividualOffer
-
+	BuildOffer(ctx context.Context, payload *openseamodels.BuildOfferPayload,
+		opts ...RequestOptionFn) (resp *openseamodels.BuildOfferResponse, err error)
+	GetCollectionOffers(ctx context.Context, collectionSlug string,
+		opts ...RequestOptionFn) (resp *openseamodels.Offers, err error)
+	CreateCriteriaOffer(ctx context.Context, payload *openseamodels.CreateCriteriaOfferPayload,
+		opts ...RequestOptionFn) (resp *openseamodels.OfferResponse, err error)
+	CreateIndividualOffer(ctx context.Context, ch chain.Chain,
+		payload *openseamodels.CreateOrderPayload) (resp *openseamodels.OrderResponse, err error)
 	// CreateListing lists a single NFT (ERC721 or ERC1155) for sale on the OpenSea marketplace.
 	CreateListing(ctx context.Context, ch chain.Chain,
-		payload *openseamodels.CreateListingPayload) (resp *openseamodels.CreateListingResponse, err error)
+		payload *openseamodels.CreateOrderPayload) (resp *openseamodels.CreateListingResponse, err error)
 	// FulfillListing retrieves all the information, including signatures, needed to fulfill a listing directly onchain.
 	FulfillListing(ctx context.Context, ch chain.Chain,
 		orderHash, fulfiller string) (resp *openseamodels.FulfillmentDataResponse, err error)
-	// FulfillOffer
-
+	FulfillOffer(ctx context.Context, payload *openseamodels.FulfillOfferPayload,
+		opts ...RequestOptionFn) (resp *openseamodels.FulfillmentDataResponse, err error)
 	// GetAllListingsByCollection gets all active, valid listings for a single collection.
 	GetAllListingsByCollection(ctx context.Context, payload *openseamodels.GetAllListingsByCollectionPayload,
 		opts ...RequestOptionFn) (resp *openseamodels.ListingsByCollectionResponse, err error)
-
-	// GetOffersByCollection
-	// GetIndividualOffers
-
+	GetAllCollectionOffers(ctx context.Context, payload *openseamodels.CollectionPayload,
+		opts ...RequestOptionFn) (resp *openseamodels.PageableOffers, err error)
+	GetIndividualOffers(ctx context.Context, ch chain.Chain,
+		payload *openseamodels.OrderPayload) (resp *openseamodels.OrdersResponse, err error)
 	// GetListings gets the complete set of active, valid listings.
 	GetListings(ctx context.Context, ch chain.Chain,
-		payload *openseamodels.GetListingsPayload) (resp *openseamodels.GetListingsResponse, err error)
-	// GetOrder
-	// GetTraitOffers
+		payload *openseamodels.OrderPayload) (resp *openseamodels.OrdersResponse, err error)
+	GetOrder(ctx context.Context, payload *openseamodels.GetOrderPayload) (
+		resp *openseamodels.GetOrderResponse, err error)
+	GetTraitOffers(ctx context.Context, payload *openseamodels.GetTraitOffersPayload,
+		opts ...RequestOptionFn) (resp *openseamodels.Offers, err error)
 }
 
 type client struct {

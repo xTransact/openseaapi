@@ -16,8 +16,8 @@ import (
 // GetListings gets the complete set of active, valid listings.
 // @Param ch (chain.Chain): The blockchain on which to filter the results.
 // DOC: https://docs.opensea.io/reference/get_listings
-func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *openseamodels.GetListingsPayload) (
-	resp *openseamodels.GetListingsResponse, err error) {
+func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *openseamodels.OrderPayload) (
+	resp *openseamodels.OrdersResponse, err error) {
 
 	// POST /api/v2/orders/{chain}/{protocol}/listings
 	url := fmt.Sprintf("%s/api/v2/orders/%s/%s/listings", openseaapiutils.GetBaseURLByChain(ch), ch.Value(), openseaconsts.ProtocolName)
@@ -47,8 +47,8 @@ func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *opens
 		return nil, err
 	}
 
-	resp = new(openseamodels.GetListingsResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	resp = new(openseamodels.OrdersResponse)
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
@@ -96,7 +96,7 @@ func (c *client) GetAllListingsByCollection(ctx context.Context, payload *opense
 	}
 
 	resp = new(openseamodels.ListingsByCollectionResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
@@ -106,7 +106,7 @@ func (c *client) GetAllListingsByCollection(ctx context.Context, payload *opense
 // CreateListing lists a single NFT (ERC721 or ERC1155) for sale on the OpenSea marketplace.
 // DOC: https://docs.opensea.io/reference/post_listing
 func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
-	payload *openseamodels.CreateListingPayload) (resp *openseamodels.CreateListingResponse, err error) {
+	payload *openseamodels.CreateOrderPayload) (resp *openseamodels.CreateListingResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
 		return nil, fmt.Errorf("invalid payload: %w", err)
@@ -137,7 +137,7 @@ func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
 	}
 
 	resp = new(openseamodels.CreateListingResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

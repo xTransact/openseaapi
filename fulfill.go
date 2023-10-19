@@ -26,12 +26,12 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 	}
 
 	payload := &openseamodels.FulfillListingPayload{
-		Listing: &openseamodels.FulfillListingPayloadListing{
+		Listing: &openseamodels.FulfillOrder{
 			Hash:            orderHash,
 			Chain:           ch.Value(),
 			ProtocolAddress: openseaconsts.SeaportV15Address.String(),
 		},
-		FulFiller: &openseamodels.FulfillListingPayloadFulfiller{
+		FulFiller: &openseamodels.Fulfiller{
 			Address: fulfiller,
 		},
 	}
@@ -61,7 +61,53 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 	}
 
 	resp = new(openseamodels.FulfillmentDataResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+	}
+
+	return resp, nil
+}
+
+// FulfillOffer retrieves all the information, including signatures, needed to fulfill an offer directly onchain.
+// DOC: https://docs.opensea.io/reference/generate_offer_fulfillment_data_v2
+func (c *client) FulfillOffer(ctx context.Context, payload *openseamodels.FulfillOfferPayload,
+	opts ...RequestOptionFn) (resp *openseamodels.FulfillmentDataResponse, err error) {
+
+	o := new(requestOptions)
+	for _, apply := range opts {
+		apply(o)
+	}
+
+	if err = payload.Validate(); err != nil {
+		return nil, err
+	}
+
+	payloadData, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	// POST /api/v2/offers/fulfillment_data
+	url := fmt.Sprintf("%s/api/v2/offers/fulfillment_data", openseaapiutils.GetBaseURL(o.testnets))
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
+	if err != nil {
+		return nil, fmt.Errorf("failed to new request: %w", err)
+	}
+
+	c.acceptJson(req)
+	c.contentTypeJson(req)
+	if !o.testnets {
+		c.challenge(req)
+	}
+
+	body, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	resp = new(openseamodels.FulfillmentDataResponse)
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

@@ -3,6 +3,7 @@ package openseamodels
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"math/big"
 	"net/url"
 	"strconv"
@@ -54,6 +55,10 @@ type Contract struct {
 	Name string `json:"name,omitempty"`
 	// The total supply of the contract
 	Supply int `json:"supply,omitempty"`
+}
+
+type ContractAddress struct {
+	Address string `json:"address"`
 }
 
 type RankingFeature struct {
@@ -130,35 +135,34 @@ type BaseOfferAndConsideration struct {
 	// a merkle root composed of the valid set of token identifiers for the item.
 	// This value will be ignored for Ether and ERC20 item types,
 	// and can optionally be zero for criteria-based item types to allow for any identifier.
-	IdentifierOrCriteria any `json:"identifierOrCriteria"`
+	IdentifierOrCriteria json.Number `json:"identifierOrCriteria"`
 	// StartAmount: required: string or int: The amount of the token in question that will be required should the order be fulfilled.
-	StartAmount any `json:"startAmount"`
+	StartAmount json.Number `json:"startAmount"`
 	// EndAmount: required: string or int: When endAmount differs from startAmount,
 	// the realized amount is calculated linearly based on the time elapsed since the order became active.
-	EndAmount any `json:"endAmount"`
+	EndAmount json.Number `json:"endAmount"`
 }
 
 func (b *BaseOfferAndConsideration) Validate() error {
-	if b.ItemType < 0 {
+	if !openseaenums.ValidateItemType(int(b.ItemType)) {
 		return errors.New("invalid offer.itemType")
 	}
 	if b.Token.String() == "" {
 		return errors.New("offer.token must not be empty")
 	}
 
-	if b.IdentifierOrCriteria == nil {
+	if b.IdentifierOrCriteria == "" {
 		return errors.New("offer.identifierOrCriteria must not be nil")
 	}
-	_, ok := b.IdentifierOrCriteria.(int)
-	if !ok {
+	if _, err := b.IdentifierOrCriteria.Int64(); err != nil {
 		return errors.New("invalid offer.identifierOrCriteria")
 	}
 
-	if err := openseaapiutils.ValidateAmount("offer.startAmount", b.StartAmount); err != nil {
+	if err := openseaapiutils.ValidateJsonNumber("startAmount", b.StartAmount); err != nil {
 		return err
 	}
 
-	if err := openseaapiutils.ValidateAmount("offer.endAmount", b.EndAmount); err != nil {
+	if err := openseaapiutils.ValidateJsonNumber("endAmount", b.EndAmount); err != nil {
 		return err
 	}
 
@@ -223,8 +227,8 @@ type Parameters struct {
 	Offerer       string           `json:"offerer"`
 	Offer         []*Offer         `json:"offer"`
 	Consideration []*Consideration `json:"consideration"`
-	StartTime     any              `json:"startTime"` // string or int
-	EndTime       any              `json:"endTime"`   // string or int
+	StartTime     json.Number      `json:"startTime"` // string or int
+	EndTime       json.Number      `json:"endTime"`   // string or int
 	// OrderType: required: The type of order, which determines how it can be executed.
 	OrderType openseaenums.OrderType `json:"orderType"`
 	// Zone: required: Optional secondary account attached the order which can cancel orders.
@@ -244,8 +248,82 @@ type Parameters struct {
 	// To utilize OpenSea's conduit, use 0x0000007b02230091a7ed01230072f7006a004d60a8d4e71d599b8104250f0000
 	ConduitKey string `json:"conduitKey"`
 	// TotalOriginalConsiderationItems: required: Size of the consideration array.
-	TotalOriginalConsiderationItems int `json:"totalOriginalConsiderationItems"`
-	Counter                         any `json:"counter,omitempty"` // any could be an integer or string
+	TotalOriginalConsiderationItems int         `json:"totalOriginalConsiderationItems"`
+	Counter                         json.Number `json:"counter,omitempty"` // any could be an integer or string
+}
+
+func (p *Parameters) Validate() error {
+	if p.Offerer == "" {
+		return errors.New("offerer must not be empty")
+	}
+	for _, offer := range p.Offer {
+		if offer == nil {
+			continue
+		}
+		if err := offer.Validate(); err != nil {
+			return err
+		}
+	}
+	for _, consideration := range p.Consideration {
+		if consideration == nil {
+			continue
+		}
+		if err := consideration.Validate(); err != nil {
+			return err
+		}
+	}
+
+	if err := openseaapiutils.ValidateJsonNumber("startTime", p.StartTime); err != nil {
+		return err
+	}
+
+	if err := openseaapiutils.ValidateJsonNumber("endTime", p.EndTime); err != nil {
+		return err
+	}
+
+	if !openseaenums.ValidateOrderType(int(p.OrderType)) {
+		return errors.New("invalid orderType")
+	}
+
+	if p.Zone == "" {
+		return errors.New("zone must not be empty")
+	}
+	if p.ZoneHash == "" {
+		return errors.New("zoneHash must not be empty")
+	}
+	if p.Salt == "" {
+		return errors.New("salt must not be empty")
+	}
+	if p.ConduitKey == "" {
+		return errors.New("conduitKey must not be empty")
+	}
+
+	if p.Counter == "" {
+		return errors.New("counter must not be empty")
+	}
+	c, err := p.Counter.Int64()
+	if err != nil {
+		return fmt.Errorf("invalid counter: %w", err)
+	}
+	if c < 0 {
+		return errors.New("invalid counter")
+	}
+
+	return nil
+}
+
+// PartialParameters : Partial set of Seaport Order Parameters
+type PartialParameters struct {
+	Considerations []Consideration `json:"considerations"`
+	// Optional secondary account attached the order which can cancel orders.
+	// Additionally, when the OrderType is Restricted, the zone or the offerer are the only entities which can execute the order.
+	// For open orders, use the zero address.
+	// For restricted orders, use the signed zone address 0x000000e7ec00e7b300774b00001314b8610022b8
+	Zone string `json:"zone"`
+	// A value that will be supplied to the zone when fulfilling restricted orders that the zone can utilize
+	// when making a determination on whether to authorize the order.
+	// Most often this value will be the zero hash 0x0000000000000000000000000000000000000000000000000000000000000000
+	ZoneHash string `json:"zoneHash"`
 }
 
 type Identifier struct {
@@ -305,4 +383,28 @@ type Fulfillment struct {
 type FulfillmentComponent struct {
 	OrderIndex json.Number `json:"orderIndex"`
 	ItemIndex  json.Number `json:"itemIndex"`
+}
+
+type CollectionSlug struct {
+	// Unique string to identify a collection on OpenSea.
+	// This can be found by visiting the collection on the OpenSea website and noting the last path parameter.
+	Slug string `json:"slug"`
+}
+
+type CriteriaTrait struct {
+	Type  string `json:"type"`
+	Value string `json:"value"`
+}
+
+type Criteria struct {
+	// The collection in which the criteria offer is being made for.
+	Collection *CollectionSlug `json:"collection"`
+	// The unique public blockchain identifier, address, for the NFT contract
+	Contract *ContractAddress `json:"contract"`
+	// The trait that the criteria offer is being made for.
+	Trait *CriteriaTrait `json:"trait"`
+	// Represents a list of token ids which can be used to fulfill the criteria offer.
+	// When decoded using the provided SDK function,
+	// developers can now see a list of all tokens that could be used to fulfill the offer.
+	EncodedTokenIDs string `json:"encoded_token_ids"`
 }

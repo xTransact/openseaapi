@@ -29,19 +29,19 @@ An SDK for [OpenSea API](https://docs.opensea.io/reference/api-overview).
 
 ### OpenSea Marketplace Endpoints
 
-- [ ] [Build an Offer](https://docs.opensea.io/reference/build_offer_v2)
-- [ ] [Get Collection Offers](https://docs.opensea.io/reference/get_collection_offers_v2)
-- [ ] [Create Criteria Offer](https://docs.opensea.io/reference/post_criteria_offer_v2)
-- [ ] [Create Individual Offer](https://docs.opensea.io/reference/post_offer)
+- [x] [Build an Offer](https://docs.opensea.io/reference/build_offer_v2)
+- [x] [Get Collection Offers](https://docs.opensea.io/reference/get_collection_offers_v2)
+- [x] [Create Criteria Offer](https://docs.opensea.io/reference/post_criteria_offer_v2)
+- [x] [Create Individual Offer](https://docs.opensea.io/reference/post_offer)
 - [x] [Create Listing](https://docs.opensea.io/reference/post_listing)
 - [x] [Fulfill a Listing](https://docs.opensea.io/reference/generate_listing_fulfillment_data_v2)
-- [ ] [Fullfill an Offer](https://docs.opensea.io/reference/generate_offer_fulfillment_data_v2)
+- [x] [Fullfill an Offer](https://docs.opensea.io/reference/generate_offer_fulfillment_data_v2)
 - [x] [Get All Listings (by collection)](https://docs.opensea.io/reference/get_all_listings_on_collection_v2)
-- [ ] [Get All Offers (by collection)](https://docs.opensea.io/reference/get_all_offers_on_collection_v2)
-- [ ] [Get Individual Offers](https://docs.opensea.io/reference/get_offers)
+- [x] [Get All Offers (by collection)](https://docs.opensea.io/reference/get_all_offers_on_collection_v2)
+- [x] [Get Individual Offers](https://docs.opensea.io/reference/get_offers)
 - [x] [Get Listings](https://docs.opensea.io/reference/get_listings)
-- [ ] [Get Order](https://docs.opensea.io/reference/get_order)
-- [ ] [Get Trait Offers](https://docs.opensea.io/reference/get_trait_offers_v2)
+- [x] [Get Order](https://docs.opensea.io/reference/get_order)
+- [x] [Get Trait Offers](https://docs.opensea.io/reference/get_trait_offers_v2)
 
 
 ## Get Started

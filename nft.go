@@ -64,7 +64,7 @@ func (c *client) ListNftsByContract(ctx context.Context, ch chain.Chain,
 // @param limit: The number of NFTs to return. Must be between 1 and 200. Default: 50
 // @param next: The cursor for the next page of results. This is returned from a previous request.
 // DOC: https://docs.opensea.io/reference/list_nfts_by_collection
-func (c *client) ListNftsByCollection(ctx context.Context, payload *openseamodels.GetNftsByCollectionPayload,
+func (c *client) ListNftsByCollection(ctx context.Context, payload *openseamodels.CollectionPayload,
 	opts ...RequestOptionFn) (resp *openseamodels.NftsResponse, err error) {
 
 	o := new(requestOptions)
@@ -115,7 +115,7 @@ func (c *client) GetNft(ctx context.Context, ch chain.Chain,
 	}
 
 	resp = new(openseamodels.NftResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
@@ -191,7 +191,7 @@ func (c *client) getNfts(ctx context.Context, url string,
 	}
 
 	resp = new(openseamodels.NftsResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

@@ -98,19 +98,6 @@ type GetNftsByContractPayload struct {
 	*GetNftsBasePayload
 }
 
-type GetNftsByCollectionPayload struct {
-	*BaseQueryParams
-
-	CollectionSlug string `json:"collection_slug"`
-}
-
-func (p *GetNftsByCollectionPayload) Validate() error {
-	if p.CollectionSlug == "" {
-		return errors.New("collection_slug must not be empty")
-	}
-	return p.BaseQueryParams.Validate()
-}
-
 type NftsResponse struct {
 	*Nfts
 	Next string `json:"next"`

@@ -11,6 +11,10 @@ const (
 	ItemTypeERC1155WithCriteria
 )
 
+func ValidateItemType(itemType int) bool {
+	return itemType >= int(ItemTypeNative) && itemType <= int(ItemTypeERC1155WithCriteria)
+}
+
 type OrderType int
 
 const (
@@ -26,12 +30,20 @@ const (
 	OrderTypeContract
 )
 
+func ValidateOrderType(orderType int) bool {
+	return orderType >= int(OrderTypeFullOpen) && orderType <= int(OrderTypeContract)
+}
+
 type OrderSide uint8
 
 const (
 	OrderSideBuy OrderSide = 0
 	OrderSideSell
 )
+
+func ValidateOrderSide(orderSide uint8) bool {
+	return orderSide >= uint8(OrderSideBuy) && orderSide <= uint8(OrderSideSell)
+}
 
 type Type int
 
@@ -57,6 +69,10 @@ func (t Type) Value() string {
 	}
 }
 
+func ValidateType(t int) bool {
+	return t >= int(TypeBasic) && t <= int(TypeCriteria)
+}
+
 // SafelistStatus is the status of the collection verification requests.
 type SafelistStatus string
 
@@ -67,3 +83,17 @@ const (
 	SafelistStatusVerified            SafelistStatus = "verified"
 	SafelistStatusDisabledTopTrending SafelistStatus = "disabled_top_trending"
 )
+
+var safelistStatusList = []SafelistStatus{
+	SafelistStatusNotRequested, SafelistStatusRequested, SafelistStatusApproved,
+	SafelistStatusVerified, SafelistStatusDisabledTopTrending,
+}
+
+func ValidateSafelistStatus(safelistStatus string) bool {
+	for _, s := range safelistStatusList {
+		if string(s) == safelistStatus {
+			return true
+		}
+	}
+	return false
+}

@@ -22,7 +22,7 @@ const (
 	OrderDirectionDesc = "desc"
 )
 
-type GetListingsPayload struct {
+type OrderPayload struct {
 	// Filter results by the contract address for NFT(s).
 	// NOTE: If used, token_ids or token_id is required.
 	AssetContractAddress *string `query:"asset_contract_address"`
@@ -53,7 +53,7 @@ type GetListingsPayload struct {
 	TokenIDs []int `query:"token_ids"`
 }
 
-func (p *GetListingsPayload) Validate() error {
+func (p *OrderPayload) Validate() error {
 	if p.AssetContractAddress != nil && len(p.TokenIDs) == 0 {
 		return errors.New("token_ids must be used if asset_contract_address is not nil")
 	}
@@ -83,7 +83,7 @@ func (p *GetListingsPayload) Validate() error {
 }
 
 // ToQuery -
-func (p *GetListingsPayload) ToQuery() url.Values {
+func (p *OrderPayload) ToQuery() url.Values {
 	q := make(url.Values)
 
 	if p.AssetContractAddress != nil {
@@ -126,21 +126,21 @@ func (p *GetListingsPayload) ToQuery() url.Values {
 	return q
 }
 
-type GetListingsResponse struct {
+type OrdersResponse struct {
 	// The cursor for the next page of results.
 	Next string `json:"next"`
 	// The cursor for the previous page of results.
 	Previous string `json:"previous"`
 	// Models OrderV2 objects to serialize to a 'similar' schema to what we have with OrderV1s
-	Orders []*ListingsOrder `json:"orders"`
+	Orders []*OrderResponse `json:"orders"`
 }
 
-func (r *GetListingsResponse) ToJson() []byte {
+func (r *OrdersResponse) ToJson() []byte {
 	data, _ := json.Marshal(r)
 	return data
 }
 
-type ListingsOrder struct {
+type OrderResponse struct {
 	// Date the order was created
 	CreatedDate string `json:"created_date"`
 	// Date the order was closed
@@ -187,7 +187,7 @@ type ListingsOrder struct {
 	TakerAssetBundle any `json:"taker_asset_bundle,omitempty"`
 }
 
-type CreateListingPayload struct {
+type CreateOrderPayload struct {
 	Parameters *Parameters `json:"parameters"`
 	// Signature of the signed type data represented by the parameters field.
 	Signature string `json:"signature"`
@@ -195,7 +195,7 @@ type CreateListingPayload struct {
 	ProtocolAddress string `json:"protocol_address"`
 }
 
-func (p *CreateListingPayload) Validate() error {
+func (p *CreateOrderPayload) Validate() error {
 	if p.Parameters == nil {
 		return errors.New("invalid parameters")
 	}
@@ -222,20 +222,11 @@ func (p *CreateListingPayload) Validate() error {
 		}
 	}
 
-	if p.Parameters.StartTime == nil {
-		return errors.New("startTime must not be nil")
+	if err := openseaapiutils.ValidateJsonNumber("startTime", p.Parameters.StartTime); err != nil {
+		return err
 	}
-	_, ok := p.Parameters.StartTime.(int64)
-	if !ok {
-		return errors.New("invalid startTime")
-	}
-
-	if p.Parameters.EndTime == nil {
-		return errors.New("endTime must not be nil")
-	}
-	_, ok = p.Parameters.EndTime.(int64)
-	if !ok {
-		return errors.New("invalid endTime")
+	if err := openseaapiutils.ValidateJsonNumber("endTime", p.Parameters.EndTime); err != nil {
+		return err
 	}
 
 	if p.Parameters.OrderType < 0 {
@@ -253,7 +244,7 @@ func (p *CreateListingPayload) Validate() error {
 	if p.Parameters.ConduitKey == "" {
 		return errors.New("conduitKey must not be empty")
 	}
-	if p.Parameters.Counter == nil {
+	if p.Parameters.Counter == "" {
 		return errors.New("counter must not be empty")
 	}
 
@@ -268,7 +259,7 @@ func (p *CreateListingPayload) Validate() error {
 }
 
 type CreateListingResponse struct {
-	Order *ListingsOrder `json:"order"`
+	Order *OrderResponse `json:"order"`
 }
 
 type ProtocolData struct {
@@ -276,7 +267,7 @@ type ProtocolData struct {
 	Signature  string      `json:"signature"`
 }
 
-func (r *GetListingsResponse) IsNotFound() bool {
+func (r *OrdersResponse) IsNotFound() bool {
 	return len(r.Orders) == 0
 }
 
@@ -316,22 +307,9 @@ func (p *GetAllListingsByCollectionPayload) ToQuery() url.Values {
 
 type FulfillListingPayload struct {
 	// Listing: required
-	Listing *FulfillListingPayloadListing `json:"listing"`
+	Listing *FulfillOrder `json:"listing"`
 	// FulFiller: required
-	FulFiller *FulfillListingPayloadFulfiller `json:"fulfiller"`
-}
-
-type FulfillListingPayloadListing struct {
-	// Hash: required: Hash of the order to fulfill
-	Hash string `json:"hash"`
-	// Chain: required
-	Chain           string `json:"chain"`
-	ProtocolAddress string `json:"protocol_address"`
-}
-
-type FulfillListingPayloadFulfiller struct {
-	// Address: required: Fulfiller address.
-	Address string `json:"address"`
+	FulFiller *Fulfiller `json:"fulfiller"`
 }
 
 type ListingsByCollectionResponse struct {
@@ -340,12 +318,12 @@ type ListingsByCollectionResponse struct {
 }
 
 type CollectionListing struct {
-	OrderHash    string             `json:"order_hash"`
-	Type         openseaenums.Type  `json:"type"`
-	Price        *BasicListingPrice `json:"price"`
-	ProtocolData *ProtocolData      `json:"protocol_data"`
+	OrderHash    string            `json:"order_hash"`
+	Type         openseaenums.Type `json:"type"`
+	Price        *Price            `json:"price"`
+	ProtocolData *ProtocolData     `json:"protocol_data"`
 }
 
-type BasicListingPrice struct {
+type Price struct {
 	Current *Current `json:"currenty"`
 }

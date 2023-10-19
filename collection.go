@@ -45,7 +45,7 @@ func (c *client) ListCollections(ctx context.Context, payload *openseamodels.Lis
 	}
 
 	resp = new(openseamodels.CollectionsResponse)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
@@ -83,7 +83,7 @@ func (c *client) GetCollection(ctx context.Context, collectionSlug string, opts 
 	}
 
 	resp = new(openseamodels.SingleCollection)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 
@@ -119,7 +119,7 @@ func (c *client) GetCollectionStats(ctx context.Context, collectionSlug string, 
 	}
 
 	resp = new(openseamodels.CollectionStats)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

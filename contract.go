@@ -45,7 +45,7 @@ func (c *client) GetContract(ctx context.Context, ch chain.Chain, address common
 	}
 
 	resp = new(openseamodels.Contract)
-	if err = json.Unmarshal(body, &resp); err != nil {
+	if err = json.Unmarshal(body, resp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
 	}
 

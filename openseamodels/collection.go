@@ -72,6 +72,19 @@ type SingleCollection struct {
 	Fees []*CollectionFee `json:"fees"`
 }
 
+type CollectionPayload struct {
+	*BaseQueryParams
+
+	CollectionSlug string `json:"collection_slug"`
+}
+
+func (p *CollectionPayload) Validate() error {
+	if p.CollectionSlug == "" {
+		return errors.New("collection_slug must not be empty")
+	}
+	return p.BaseQueryParams.Validate()
+}
+
 type ListCollectionsPayload struct {
 	// The blockchain on which to filter the results
 	ChainIdentifier string `json:"chain_identifier"`

@@ -2,6 +2,7 @@ package openseamodels
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math/big"
 
@@ -212,4 +213,57 @@ func (t *FulfillmentTransaction) ParseInputDataToMatchAdvancedOrders() (p *Match
 	}
 
 	return p, nil
+}
+
+type Fulfiller struct {
+	// Address: required: Fulfiller address.
+	Address string `json:"address"`
+}
+
+type FulfillOrder struct {
+	// Hash: required: Hash of the order to fulfill
+	Hash string `json:"hash"`
+	// Chain: required
+	Chain           string `json:"chain"`
+	ProtocolAddress string `json:"protocol_address"`
+}
+
+type FulfillConsideration struct {
+	AssetContractAddress common.Address `json:"asset_contract_address"`
+	TokenID              string         `json:"token_id"`
+}
+
+type FulfillOfferPayload struct {
+	Offer         *FulfillOrder         `json:"offer"`
+	Fulfiller     *Fulfiller            `json:"fulfiller"`
+	Consideration *FulfillConsideration `json:"consideration"`
+}
+
+func (p *FulfillOfferPayload) Validate() error {
+	if p.Offer == nil || p.Fulfiller == nil || p.Consideration == nil {
+		return errors.New("illegal arguments: nil")
+	}
+
+	if p.Offer.Hash == "" {
+		return errors.New("hash must not be empty")
+	}
+	if p.Offer.Chain == "" {
+		return errors.New("chain must not be empty")
+	}
+	if p.Offer.ProtocolAddress == "" {
+		return errors.New("protocol_address must not be empty")
+	}
+
+	if p.Fulfiller.Address == "" {
+		return errors.New("fulfiller address must not be empty")
+	}
+
+	if p.Consideration.AssetContractAddress.String() == "" {
+		return errors.New("consideration asset_contract_address must not be empty")
+	}
+	if p.Consideration.TokenID == "" {
+		return errors.New("consideration token_id must not be empty")
+	}
+
+	return nil
 }
