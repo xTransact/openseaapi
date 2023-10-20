@@ -90,7 +90,7 @@ type OrderInputData struct {
 }
 
 type AdvancedOrdersInputData struct {
-	AdvancedOrder       *AdvancedOrder     `json:"advancedOrder"`
+	AdvancedOrder       *AdvancedOrder     `json:"orders"`
 	CriteriaResolvers   []CriteriaResolver `json:"criteriaResolvers"`
 	FulfillerConduitKey string             `json:"fulfillerConduitKey"`
 	Recipient           common.Address     `json:"recipient"`
@@ -105,7 +105,7 @@ type AvailableOrdersInputData struct {
 }
 
 type AvailableAdvancedOrdersInputData struct {
-	AdvancedOrders            []AdvancedOrder          `json:"advancedOrders"`
+	AdvancedOrders            []AdvancedOrder          `json:"orders"`
 	CriteriaResolvers         []CriteriaResolver       `json:"criteriaResolvers"`
 	OfferFulfillments         [][]FulfillmentComponent `json:"offerFulfillments"`
 	ConsiderationFulfillments [][]FulfillmentComponent `json:"considerationFulfillments"`
