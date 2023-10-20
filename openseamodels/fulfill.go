@@ -81,7 +81,7 @@ type AdvancedOrderFulfillmentTransaction struct {
 	// Value: required: Wei value of the transaction
 	Value *big.Int `json:"value"`
 	// InputData: required: Decoded Call Data.
-	InputData *AdvancedOrdersInputData `json:"input_data"`
+	InputData *AdvancedOrderInputData `json:"input_data"`
 }
 
 type OrderInputData struct {
@@ -89,8 +89,8 @@ type OrderInputData struct {
 	FulfillerConduitKey string `json:"fulfillerConduitKey"`
 }
 
-type AdvancedOrdersInputData struct {
-	AdvancedOrder       *AdvancedOrder     `json:"orders"`
+type AdvancedOrderInputData struct {
+	AdvancedOrder       *AdvancedOrder     `json:"order"`
 	CriteriaResolvers   []CriteriaResolver `json:"criteriaResolvers"`
 	FulfillerConduitKey string             `json:"fulfillerConduitKey"`
 	Recipient           common.Address     `json:"recipient"`
@@ -166,9 +166,9 @@ func (t *FulfillmentTransaction) ParseInputDataToBasicOrder() (p *InputDataBasic
 	return p, nil
 }
 
-func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrders() (p *AdvancedOrdersInputData, err error) {
+func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrders() (p *AdvancedOrderInputData, err error) {
 	if t.InputData == nil {
-		return &AdvancedOrdersInputData{}, nil
+		return &AdvancedOrderInputData{}, nil
 	}
 
 	data, err := json.Marshal(t.InputData)
@@ -176,7 +176,7 @@ func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrders() (p *AdvancedOr
 		return nil, fmt.Errorf("failed to marshal input data: %w", err)
 	}
 
-	p = new(AdvancedOrdersInputData)
+	p = new(AdvancedOrderInputData)
 	if err = json.Unmarshal(data, p); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
 	}
