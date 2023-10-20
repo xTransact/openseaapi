@@ -114,6 +114,11 @@ type AvailableAdvancedOrdersInputData struct {
 	MaximumFulfilled          string                   `json:"maximumFulfilled"`
 }
 
+type MatchOrdersInputData struct {
+	Fulfillments []Fulfillment `json:"fulfillments"`
+	Orders       []Order       `json:"orders"`
+}
+
 type MatchAdvancedOrdersInputData struct {
 	Orders            []AdvancedOrder    `json:"orders"`
 	CriteriaResolvers []CriteriaResolver `json:"criteriaResolvers"`

@@ -1,8 +1,6 @@
 package openseamodels
 
 import (
-	"time"
-
 	"github.com/ethereum/go-ethereum/common"
 )
 
@@ -21,7 +19,7 @@ type Account struct {
 	// The OpenSea account's bio.
 	Bio string `json:"bio"`
 	// Date the account was first added to OpenSea.
-	JoinedDate time.Time `json:"joined_date"`
+	JoinedDate string `json:"joined_date"`
 }
 
 type SocialMediaAccount struct {

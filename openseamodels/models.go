@@ -375,8 +375,8 @@ type Execution struct {
 
 // Fulfillment is an auto generated low-level Go binding around an user-defined struct.
 type Fulfillment struct {
-	OfferComponents         []FulfillmentComponent `json:"offerComponents"`
 	ConsiderationComponents []FulfillmentComponent `json:"considerationComponents"`
+	OfferComponents         []FulfillmentComponent `json:"offerComponents"`
 }
 
 // FulfillmentComponent is an auto generated low-level Go binding around an user-defined struct.
@@ -407,4 +407,16 @@ type Criteria struct {
 	// When decoded using the provided SDK function,
 	// developers can now see a list of all tokens that could be used to fulfill the offer.
 	EncodedTokenIDs string `json:"encoded_token_ids"`
+}
+
+type Payment struct {
+	// Amount of tokens in the order
+	Quantity int `json:"quantity"`
+	// The contract address for the ERC20 token
+	TokenAddress string `json:"token_address"`
+	// Returns the number of decimals the token uses -
+	// e.g. 8, means to divide the token amount by 100000000 to get its user representation.
+	Decimals *big.Int `json:"decimals"`
+	// Returns the symbol of the token, e.g. ETH, WETH, USDC, etc
+	Symbol string `json:"symbol"`
 }

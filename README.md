@@ -22,9 +22,9 @@ An SDK for [OpenSea API](https://docs.opensea.io/reference/api-overview).
 ### Analytics Endpoints
 
 - [x] [Get Collection Stats](https://docs.opensea.io/reference/get_collection_stats)
-- [ ] [Get Events (by account)](https://docs.opensea.io/reference/list_events_by_account)
-- [ ] [Get Events (by NFT)](https://docs.opensea.io/reference/list_events_by_nft)
-- [ ] [Get Events (by collection)](https://docs.opensea.io/reference/list_events_by_collection)
+- [x] [Get Events (by account)](https://docs.opensea.io/reference/list_events_by_account)
+- [x] [Get Events (by NFT)](https://docs.opensea.io/reference/list_events_by_nft)
+- [x] [Get Events (by collection)](https://docs.opensea.io/reference/list_events_by_collection)
 
 
 ### OpenSea Marketplace Endpoints
@@ -44,10 +44,24 @@ An SDK for [OpenSea API](https://docs.opensea.io/reference/api-overview).
 - [x] [Get Trait Offers](https://docs.opensea.io/reference/get_trait_offers_v2)
 
 
-## Get Started
+## Getting Started
 
 ### Get it
 
 ```shell
 go get -u github.com/reedchan7/openseaapi
+```
+
+### Examples
+
+```go
+cli := NewClient(
+	WithApiKey(os.Getenv("OPENSEA_API_KEY")),
+)
+
+// Get account on mainnet by wallet address
+resp, err := cli.GetAccount(ctx, addr)
+
+// Get account on goerli testnet by wallet address
+resp, err := cli.GetAccount(ctx, addr,UseTestnets())
 ```

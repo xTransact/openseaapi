@@ -55,8 +55,7 @@ func (c *client) BuildOffer(ctx context.Context, payload *openseamodels.BuildOff
 	return resp, nil
 }
 
-//	CreateCriteriaOffer creates a criteria offer to purchase any NFT in a collection or which matches the specified trait.
-//
+// CreateCriteriaOffer creates a criteria offer to purchase any NFT in a collection or which matches the specified trait.
 // DOC: https://docs.opensea.io/reference/post_criteria_offer_v2
 func (c *client) CreateCriteriaOffer(ctx context.Context, payload *openseamodels.CreateCriteriaOfferPayload,
 	opts ...RequestOptionFn) (resp *openseamodels.OfferResponse, err error) {

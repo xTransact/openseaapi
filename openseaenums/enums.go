@@ -97,3 +97,14 @@ func ValidateSafelistStatus(safelistStatus string) bool {
 	}
 	return false
 }
+
+type EventType string
+
+const (
+	EventTypeAll        EventType = "all"
+	EventTypeCancel     EventType = "cancel"
+	EventTypeSale       EventType = "sale"
+	EventTypeOrder      EventType = "order"
+	EventTypeTransfer   EventType = "transfer"
+	EventTypeRedemption EventType = "redemption"
+)
