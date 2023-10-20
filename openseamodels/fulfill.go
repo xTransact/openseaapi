@@ -202,6 +202,24 @@ func (t *FulfillmentTransaction) ParseInputDataToAvailableAdvancedOrders() (p *A
 	return p, nil
 }
 
+func (t *FulfillmentTransaction) ParseInputDataToMatchOrders() (p *MatchOrdersInputData, err error) {
+	if t.InputData == nil {
+		return &MatchOrdersInputData{}, nil
+	}
+
+	data, err := json.Marshal(t.InputData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+	}
+
+	p = new(MatchOrdersInputData)
+	if err = json.Unmarshal(data, p); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+	}
+
+	return p, nil
+}
+
 func (t *FulfillmentTransaction) ParseInputDataToMatchAdvancedOrders() (p *MatchAdvancedOrdersInputData, err error) {
 	if t.InputData == nil {
 		return &MatchAdvancedOrdersInputData{}, nil
