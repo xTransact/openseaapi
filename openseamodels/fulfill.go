@@ -130,6 +130,24 @@ func (t *FulfillmentTransaction) FunctionName() string {
 	return openseaapiutils.GetMethod(t.Function)
 }
 
+func (t *FulfillmentTransaction) ParseInputDataToOrder() (*OrderInputData, error) {
+	if t.InputData == nil {
+		return &OrderInputData{}, nil
+	}
+
+	data, err := json.Marshal(t.InputData)
+	if err != nil {
+		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+	}
+
+	order := new(OrderInputData)
+	if err = json.Unmarshal(data, order); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+	}
+
+	return order, nil
+}
+
 func (t *FulfillmentTransaction) ParseInputDataToBasicOrder() (p *InputDataBasicOrderParameters, err error) {
 	if t.InputData == nil {
 		return &InputDataBasicOrderParameters{}, nil
