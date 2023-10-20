@@ -166,7 +166,7 @@ func (t *FulfillmentTransaction) ParseInputDataToBasicOrder() (p *InputDataBasic
 	return p, nil
 }
 
-func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrders() (p *AdvancedOrderInputData, err error) {
+func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrder() (p *AdvancedOrderInputData, err error) {
 	if t.InputData == nil {
 		return &AdvancedOrderInputData{}, nil
 	}
