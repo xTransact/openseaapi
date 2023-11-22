@@ -3,7 +3,6 @@ package openseamodels
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"math/big"
 	"net/url"
 	"strconv"
@@ -249,7 +248,7 @@ type Parameters struct {
 	ConduitKey string `json:"conduitKey"`
 	// TotalOriginalConsiderationItems: required: Size of the consideration array.
 	TotalOriginalConsiderationItems json.Number `json:"totalOriginalConsiderationItems"`
-	Counter                         json.Number `json:"counter,omitempty"` // any could be an integer or string
+	Counter                         any         `json:"counter,omitempty"` // any could be an integer or string
 }
 
 func (p *Parameters) Validate() error {
@@ -298,15 +297,8 @@ func (p *Parameters) Validate() error {
 		return errors.New("conduitKey must not be empty")
 	}
 
-	if p.Counter == "" {
+	if p.Counter == nil {
 		return errors.New("counter must not be empty")
-	}
-	c, err := p.Counter.Int64()
-	if err != nil {
-		return fmt.Errorf("invalid counter: %w", err)
-	}
-	if c < 0 {
-		return errors.New("invalid counter")
 	}
 
 	return nil

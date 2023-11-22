@@ -244,7 +244,7 @@ func (p *CreateOrderPayload) Validate() error {
 	if p.Parameters.ConduitKey == "" {
 		return errors.New("conduitKey must not be empty")
 	}
-	if p.Parameters.Counter == "" {
+	if p.Parameters.Counter == nil {
 		return errors.New("counter must not be empty")
 	}
 
