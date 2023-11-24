@@ -4,9 +4,10 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
@@ -22,7 +23,7 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 	orderHash, fulfiller string) (resp *openseamodels.FulfillmentDataResponse, err error) {
 
 	if orderHash == "" || fulfiller == "" || ch < 0 {
-		return nil, errors.New("illegal arguments: nil")
+		return nil, errx.New("illegal arguments: nil")
 	}
 
 	payload := &openseamodels.FulfillListingPayload{
@@ -38,7 +39,7 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal payload: %w", err)
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/listings/fulfillment_data
@@ -46,19 +47,19 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.FulfillmentDataResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -80,7 +81,7 @@ func (c *client) FulfillOffer(ctx context.Context, payload *openseamodels.Fulfil
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, err
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/offers/fulfillment_data
@@ -88,19 +89,19 @@ func (c *client) FulfillOffer(ctx context.Context, payload *openseamodels.Fulfil
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.FulfillmentDataResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

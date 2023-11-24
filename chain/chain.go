@@ -1,9 +1,10 @@
 package chain
 
 import (
-	"errors"
 	"math/big"
 	"slices"
+
+	"github.com/xTransact/errx/v2"
 )
 
 type Chain int
@@ -238,7 +239,7 @@ func (c Chain) IsTestNet() bool {
 func NewFromString(ch string) (Chain, error) {
 	c, ok := valuesMapping[ch]
 	if !ok {
-		return -1, errors.New("unknown chain")
+		return -1, errx.New("unknown chain")
 	}
 	return c, nil
 }

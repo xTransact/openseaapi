@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/xTransact/errx/v2"
+
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseaconsts"
@@ -25,12 +27,12 @@ func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *opens
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	if payload != nil {
 		if err = payload.Validate(); err != nil {
-			return nil, fmt.Errorf("invalid payload: %w", err)
+			return nil, errx.Wrap(err, "invalid payload")
 		}
 
 		qs := payload.ToQuery()
@@ -42,12 +44,12 @@ func (c *client) GetListings(ctx context.Context, ch chain.Chain, payload *opens
 	c.acceptJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.OrdersResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -71,11 +73,11 @@ func (c *client) GetAllListingsByCollection(ctx context.Context, payload *opense
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	qs := payload.ToQuery()
@@ -86,12 +88,12 @@ func (c *client) GetAllListingsByCollection(ctx context.Context, payload *opense
 	c.acceptJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.ListingsByCollectionResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -103,12 +105,12 @@ func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
 	payload *openseamodels.CreateOrderPayload) (resp *openseamodels.CreateListingResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal payload: %w", err)
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/orders/{chain}/{protocol}/listings
@@ -116,19 +118,19 @@ func (c *client) CreateListing(ctx context.Context, ch chain.Chain,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.CreateListingResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

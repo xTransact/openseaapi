@@ -1,9 +1,10 @@
 package openseamodels
 
 import (
-	"errors"
 	"net/url"
 	"strconv"
+
+	"github.com/xTransact/errx/v2"
 )
 
 type BuildOfferPayload struct {
@@ -30,27 +31,27 @@ type BuildOfferResponse struct {
 
 func (p *BuildOfferPayload) Validate() error {
 	if p.Offerer == "" {
-		return errors.New("offerer must not be empty")
+		return errx.New("offerer must not be empty")
 	}
 	if p.Criteria == nil || p.Criteria.Collection == nil || p.Criteria.Contract == nil {
-		return errors.New("illegal arguments: nil")
+		return errx.New("illegal arguments: nil")
 	}
 	if p.Criteria.Collection.Slug == "" {
-		return errors.New("collection slug must not be empty")
+		return errx.New("collection slug must not be empty")
 	}
 	if p.Criteria.Contract.Address == "" {
-		return errors.New("contract address must not be empty")
+		return errx.New("contract address must not be empty")
 	}
 	if p.Criteria.Trait != nil {
 		if p.Criteria.Trait.Type == "" {
-			return errors.New("trait type must not be empty")
+			return errx.New("trait type must not be empty")
 		}
 		if p.Criteria.Trait.Value == "" {
-			return errors.New("trait value must not be empty")
+			return errx.New("trait value must not be empty")
 		}
 	}
 	if p.ProtocolAddress == "" {
-		return errors.New("protocol address must not be empty")
+		return errx.New("protocol address must not be empty")
 	}
 
 	return nil
@@ -64,11 +65,11 @@ type CreateCriteriaOfferPayload struct {
 
 func (p *CreateCriteriaOfferPayload) Validate() error {
 	if p.ProtocolData == nil || p.Criteria == nil {
-		return errors.New("illegal arguments: nil")
+		return errx.New("illegal arguments: nil")
 	}
 
 	if p.ProtocolAddress == "" {
-		return errors.New("protocol_address must not be empty")
+		return errx.New("protocol_address must not be empty")
 	}
 
 	return nil
@@ -114,7 +115,7 @@ type GetTraitOffersPayload struct {
 
 func (p *GetTraitOffersPayload) Validate() error {
 	if p.CollectionSlug == "" {
-		return errors.New("collection_slug must not be empty")
+		return errx.New("collection_slug must not be empty")
 	}
 	return nil
 }

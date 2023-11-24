@@ -2,7 +2,6 @@ package openseaapi
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log/slog"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	utlsclient "github.com/numblab/utls-client"
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
@@ -168,13 +168,13 @@ func (c *client) doRequest(r *http.Request, testnets bool) ([]byte, error) {
 
 	res, err := doWithRetry(c.httpClient, r, 5, time.Second)
 	if err != nil {
-		return nil, fmt.Errorf("failed to do request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w, status: %s", err, res.Status)
+		return nil, errx.Wrapf(err, "%s: read response body", res.Status)
 	}
 
 	if res.StatusCode != http.StatusOK {
@@ -193,6 +193,7 @@ func shouldRetry(err error, resp *http.Response) bool {
 func doWithRetry(cli *http.Client, req *http.Request, max int, interval time.Duration) (resp *http.Response, err error) {
 	for i := 0; i < max; i++ {
 		resp, err = cli.Do(req)
+		err = errx.WithStack(err)
 		if !shouldRetry(err, resp) {
 			return
 		}

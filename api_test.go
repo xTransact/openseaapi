@@ -35,6 +35,7 @@ func TestGetTestListings(t *testing.T) {
 			"9",
 		},
 	})
+
 	require.NoError(t, err)
 
 	data, err := json.MarshalIndent(listings, "", "  ")

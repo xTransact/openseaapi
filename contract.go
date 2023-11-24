@@ -3,11 +3,12 @@ package openseaapi
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
@@ -22,7 +23,7 @@ func (c *client) GetContract(ctx context.Context, ch chain.Chain, address common
 	resp *openseamodels.Contract, err error) {
 
 	if !common.IsHexAddress(address.String()) {
-		return nil, errors.New("invalid address")
+		return nil, errx.New("invalid address")
 	}
 
 	// GET /api/v2/chain/{chain}/contract/{address}
@@ -31,18 +32,18 @@ func (c *client) GetContract(ctx context.Context, ch chain.Chain, address common
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.Contract)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

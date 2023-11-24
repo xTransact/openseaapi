@@ -2,11 +2,11 @@ package openseaapiutils
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaconsts"
@@ -42,24 +42,24 @@ func ValidateAddress(addr common.Address) bool {
 
 func ValidateJsonNumber(key string, value json.Number) error {
 	if value == "" {
-		return fmt.Errorf("invalid %s: nil", key)
+		return errx.Errorf("invalid %s: nil", key)
 	}
 	valueInt64, err := value.Int64()
 	if err != nil {
-		return fmt.Errorf("invalid %s: %w", key, err)
+		return errx.Wrapf(err, "invalid %s", key)
 	}
 	if valueInt64 <= 0 {
-		return fmt.Errorf("invalid %s", key)
+		return errx.Errorf("invalid %s", key)
 	}
 	return nil
 }
 
 func ParseFailureResponse(resp *http.Response, respBody []byte) error {
 	if len(respBody) != 0 {
-		return fmt.Errorf("%s: %s", resp.Status, respBody)
+		return errx.Errorf("%s: %s", resp.Status, respBody)
 	}
 
-	return fmt.Errorf("unexpected http response: %s", resp.Status)
+	return errx.Errorf("unexpected http response: %s", resp.Status)
 }
 
 func StringPtr(v string) *string {

@@ -1,9 +1,10 @@
 package openseamodels
 
 import (
-	"errors"
 	"net/url"
 	"strconv"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaenums"
@@ -18,7 +19,7 @@ type GetEventsByAccountPayload struct {
 
 func (p *GetEventsByAccountPayload) Validate() error {
 	if p.Address == "" {
-		return errors.New("address must not be empty")
+		return errx.New("address must not be empty")
 	}
 	return nil
 }
@@ -36,10 +37,10 @@ type GetEventsByNftPayload struct {
 
 func (p *GetEventsByNftPayload) Validate() error {
 	if p.Address == "" {
-		return errors.New("address must not be empty")
+		return errx.New("address must not be empty")
 	}
 	if p.Identifier == "" {
-		return errors.New("identifier must not be empty")
+		return errx.New("identifier must not be empty")
 	}
 	return nil
 }
@@ -54,7 +55,7 @@ type GetEventsByCollectionPayload struct {
 
 func (p *GetEventsByCollectionPayload) Validate() error {
 	if p.CollectionSlug == "" {
-		return errors.New("collection_slug must not be empty")
+		return errx.New("collection_slug must not be empty")
 	}
 	return nil
 }

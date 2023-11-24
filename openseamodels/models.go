@@ -2,12 +2,12 @@ package openseamodels
 
 import (
 	"encoding/json"
-	"errors"
 	"math/big"
 	"net/url"
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseaenums"
@@ -93,7 +93,7 @@ type BaseQueryParams struct {
 
 func (b *BaseQueryParams) Validate() error {
 	if b.Limit != 0 && (b.Limit < 1 || b.Limit > 200) {
-		return errors.New("limit must be between 1 and 200")
+		return errx.New("limit must be between 1 and 200")
 	}
 	return nil
 }
@@ -144,17 +144,17 @@ type BaseOfferAndConsideration struct {
 
 func (b *BaseOfferAndConsideration) Validate() error {
 	if !openseaenums.ValidateItemType(int(b.ItemType)) {
-		return errors.New("invalid offer.itemType")
+		return errx.New("invalid offer.itemType")
 	}
 	if b.Token.String() == "" {
-		return errors.New("offer.token must not be empty")
+		return errx.New("offer.token must not be empty")
 	}
 
 	if b.IdentifierOrCriteria == "" {
-		return errors.New("offer.identifierOrCriteria must not be nil")
+		return errx.New("offer.identifierOrCriteria must not be nil")
 	}
 	if _, err := b.IdentifierOrCriteria.Int64(); err != nil {
-		return errors.New("invalid offer.identifierOrCriteria")
+		return errx.New("invalid offer.identifierOrCriteria")
 	}
 
 	if err := openseaapiutils.ValidateJsonNumber("startAmount", b.StartAmount); err != nil {
@@ -210,13 +210,13 @@ type Consideration struct {
 
 func (c *Consideration) Validate() error {
 	if c.BaseOfferAndConsideration == nil {
-		return errors.New("nil parameters")
+		return errx.New("nil parameters")
 	}
 	if err := c.BaseOfferAndConsideration.Validate(); err != nil {
 		return err
 	}
 	if !openseaapiutils.ValidateAddress(c.Recipient) {
-		return errors.New("invalid recipient")
+		return errx.New("invalid recipient")
 	}
 	return nil
 }
@@ -253,7 +253,7 @@ type Parameters struct {
 
 func (p *Parameters) Validate() error {
 	if p.Offerer == "" {
-		return errors.New("offerer must not be empty")
+		return errx.New("offerer must not be empty")
 	}
 	for _, offer := range p.Offer {
 		if offer == nil {
@@ -281,24 +281,24 @@ func (p *Parameters) Validate() error {
 	}
 
 	if !openseaenums.ValidateOrderType(int(p.OrderType)) {
-		return errors.New("invalid orderType")
+		return errx.New("invalid orderType")
 	}
 
 	if p.Zone == "" {
-		return errors.New("zone must not be empty")
+		return errx.New("zone must not be empty")
 	}
 	if p.ZoneHash == "" {
-		return errors.New("zoneHash must not be empty")
+		return errx.New("zoneHash must not be empty")
 	}
 	if p.Salt == "" {
-		return errors.New("salt must not be empty")
+		return errx.New("salt must not be empty")
 	}
 	if p.ConduitKey == "" {
-		return errors.New("conduitKey must not be empty")
+		return errx.New("conduitKey must not be empty")
 	}
 
 	if p.Counter == nil {
-		return errors.New("counter must not be empty")
+		return errx.New("counter must not be empty")
 	}
 
 	return nil

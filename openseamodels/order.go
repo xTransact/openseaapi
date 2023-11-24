@@ -1,7 +1,7 @@
 package openseamodels
 
 import (
-	"errors"
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 )
@@ -17,17 +17,17 @@ type GetOrderPayload struct {
 
 func (p *GetOrderPayload) Validate() error {
 	if p.Chain == "" {
-		return errors.New("chain must not be empty")
+		return errx.New("chain must not be empty")
 	}
 	_, err := chain.NewFromString(p.Chain)
 	if err != nil {
 		return err
 	}
 	if p.OrderHash == "" {
-		return errors.New("order_hash must not be empty")
+		return errx.New("order_hash must not be empty")
 	}
 	if p.ProtocolAddress == "" {
-		return errors.New("protocol_address must not be empty")
+		return errx.New("protocol_address must not be empty")
 	}
 	return nil
 }

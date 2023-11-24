@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/xTransact/errx/v2"
+
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseaconsts"
@@ -29,7 +31,7 @@ func (c *client) BuildOffer(ctx context.Context, payload *openseamodels.BuildOff
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, err
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/offers/build
@@ -37,19 +39,19 @@ func (c *client) BuildOffer(ctx context.Context, payload *openseamodels.BuildOff
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.BuildOfferResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -71,7 +73,7 @@ func (c *client) CreateCriteriaOffer(ctx context.Context, payload *openseamodels
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, err
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/offers
@@ -79,19 +81,19 @@ func (c *client) CreateCriteriaOffer(ctx context.Context, payload *openseamodels
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.OfferResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -108,7 +110,7 @@ func (c *client) CreateIndividualOffer(ctx context.Context, ch chain.Chain,
 
 	payloadData, err := json.Marshal(payload)
 	if err != nil {
-		return nil, err
+		return nil, errx.Wrap(err, "marshal payload")
 	}
 
 	// POST /api/v2/orders/{chain}/{protocol}/offers
@@ -117,19 +119,19 @@ func (c *client) CreateIndividualOffer(ctx context.Context, ch chain.Chain,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payloadData))
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	c.contentTypeJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.OrderResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -151,18 +153,18 @@ func (c *client) GetCollectionOffers(ctx context.Context, collectionSlug string,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.Offers)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -179,7 +181,7 @@ func (c *client) GetAllCollectionOffers(ctx context.Context, payload *openseamod
 	}
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/offers/collection/{collection_slug}/all
@@ -188,7 +190,7 @@ func (c *client) GetAllCollectionOffers(ctx context.Context, payload *openseamod
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	qs := payload.ToQuery()
@@ -199,12 +201,12 @@ func (c *client) GetAllCollectionOffers(ctx context.Context, payload *openseamod
 	c.acceptJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.PageableOffers)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -216,7 +218,7 @@ func (c *client) GetIndividualOffers(ctx context.Context, ch chain.Chain,
 	payload *openseamodels.OrderPayload) (resp *openseamodels.OrdersResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/orders/{chain}/{protocol}/offers
@@ -225,7 +227,7 @@ func (c *client) GetIndividualOffers(ctx context.Context, ch chain.Chain,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	qs := payload.ToQuery()
@@ -236,12 +238,12 @@ func (c *client) GetIndividualOffers(ctx context.Context, ch chain.Chain,
 	c.acceptJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.OrdersResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -258,7 +260,7 @@ func (c *client) GetTraitOffers(ctx context.Context, payload *openseamodels.GetT
 	}
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/offers/collection/{collection_slug}/traits
@@ -267,7 +269,7 @@ func (c *client) GetTraitOffers(ctx context.Context, payload *openseamodels.GetT
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	qs := payload.ToQuery()
@@ -278,12 +280,12 @@ func (c *client) GetTraitOffers(ctx context.Context, payload *openseamodels.GetT
 	c.acceptJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.Offers)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

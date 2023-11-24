@@ -1,10 +1,10 @@
 package openseamodels
 
 import (
-	"errors"
 	"net/url"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/xTransact/errx/v2"
 )
 
 type Nfts struct {
@@ -60,7 +60,7 @@ type GetNftsBasePayload struct {
 
 func (p *GetNftsBasePayload) Validate() error {
 	if !common.IsHexAddress(p.Address.String()) {
-		return errors.New("invalid address")
+		return errx.New("invalid address")
 	}
 	return p.BaseQueryParams.Validate()
 }
@@ -111,10 +111,10 @@ type GetNftPayload struct {
 
 func (p *GetNftPayload) Validate() error {
 	if !common.IsHexAddress(p.Address.String()) {
-		return errors.New("invalid address")
+		return errx.New("invalid address")
 	}
 	if p.Identifier == "" {
-		return errors.New("identifier must not be empty")
+		return errx.New("identifier must not be empty")
 	}
 	return nil
 }

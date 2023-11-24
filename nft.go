@@ -3,13 +3,13 @@ package openseaapi
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	neturl "net/url"
 
 	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"
@@ -28,7 +28,7 @@ func (c *client) ListNftsByAccount(ctx context.Context, ch chain.Chain,
 	payload *openseamodels.GetNftsByAccountPayload) (resp *openseamodels.NftsResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/chain/{chain}/account/{address}/nfts
@@ -48,7 +48,7 @@ func (c *client) ListNftsByContract(ctx context.Context, ch chain.Chain,
 	payload *openseamodels.GetNftsByContractPayload) (resp *openseamodels.NftsResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/chain/{chain}/contract/{address}/nfts
@@ -73,7 +73,7 @@ func (c *client) ListNftsByCollection(ctx context.Context, payload *openseamodel
 	}
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/collection/{collection_slug}/nfts
@@ -92,7 +92,7 @@ func (c *client) GetNft(ctx context.Context, ch chain.Chain,
 	payload *openseamodels.GetNftPayload) (resp *openseamodels.NftResponse, err error) {
 
 	if err = payload.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid payload: %w", err)
+		return nil, errx.Wrap(err, "invalid payload")
 	}
 
 	// GET /api/v2/chain/{chain}/contract/{address}/nfts/{identifier}
@@ -101,18 +101,18 @@ func (c *client) GetNft(ctx context.Context, ch chain.Chain,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	body, err := c.doRequest(req, ch.IsTestNet())
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.NftResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil
@@ -127,10 +127,10 @@ func (c *client) RefreshNftMetadata(ctx context.Context,
 	ch chain.Chain, address common.Address, identifier string) error {
 
 	if !common.IsHexAddress(address.String()) {
-		return errors.New("invalid address")
+		return errx.New("invalid address")
 	}
 	if identifier == "" {
-		return errors.New("identifier must not be empty")
+		return errx.New("identifier must not be empty")
 	}
 
 	// POST /api/v2/chain/{chain}/contract/{address}/nfts/{identifier}/refresh
@@ -139,29 +139,11 @@ func (c *client) RefreshNftMetadata(ctx context.Context,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to new request: %w", err)
+		return errx.WithStack(err)
 	}
 
-	if !ch.IsTestNet() {
-		c.challenge(req)
-	}
-
-	res, err := c.httpClient.Do(req)
-	if err != nil {
-		return fmt.Errorf("failed to do request: %w", err)
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode == http.StatusOK {
-		return nil
-	}
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read response body: %w. status: %s", err, res.Status)
-	}
-
-	return openseaapiutils.ParseFailureResponse(res, body)
+	_, err = c.doRequest(req, ch.IsTestNet())
+	return errx.WithStack(err)
 }
 
 func (c *client) getNfts(ctx context.Context, url string,
@@ -169,7 +151,7 @@ func (c *client) getNfts(ctx context.Context, url string,
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	if len(query) > 0 {
@@ -179,12 +161,12 @@ func (c *client) getNfts(ctx context.Context, url string,
 	c.acceptJson(req)
 	body, err := c.doRequest(req, testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.NftsResponse)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

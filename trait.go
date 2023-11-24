@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/xTransact/errx/v2"
+
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseamodels"
 )
@@ -27,18 +29,18 @@ func (c *client) GetTraits(ctx context.Context, collectionSlug string, opts ...R
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to new request: %w", err)
+		return nil, errx.WithStack(err)
 	}
 
 	c.acceptJson(req)
 	body, err := c.doRequest(req, o.testnets)
 	if err != nil {
-		return nil, err
+		return nil, errx.WithStack(err)
 	}
 
 	resp = new(openseamodels.Trait)
 	if err = json.Unmarshal(body, resp); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal response body: %w", err)
+		return nil, errx.Wrap(err, "unmarshal response body")
 	}
 
 	return resp, nil

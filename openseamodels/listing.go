@@ -2,11 +2,12 @@ package openseamodels
 
 import (
 	"encoding/json"
-	"errors"
 	"net/url"
 	"slices"
 	"strconv"
 	"time"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseaenums"
@@ -55,28 +56,28 @@ type OrderPayload struct {
 
 func (p *OrderPayload) Validate() error {
 	if p.AssetContractAddress != nil && len(p.TokenIDs) == 0 {
-		return errors.New("token_ids must be used if asset_contract_address is not nil")
+		return errx.New("token_ids must be used if asset_contract_address is not nil")
 	}
 	if len(p.TokenIDs) > 0 && p.AssetContractAddress == nil {
-		return errors.New("asset_contract_address must not be nil if token_ids is used")
+		return errx.New("asset_contract_address must not be nil if token_ids is used")
 	}
 
 	if p.Limit != nil && (*p.Limit < 1 || *p.Limit > 50) {
-		return errors.New("limit must be between 1 and 50")
+		return errx.New("limit must be between 1 and 50")
 	}
 
 	if p.OrderBy != nil {
 		if !slices.Contains([]string{OrderByCreatedDate, OrderByEthPrice}, *p.OrderBy) {
-			return errors.New("invalid order_by")
+			return errx.New("invalid order_by")
 		}
 
 		if *p.OrderBy == OrderByEthPrice && (p.AssetContractAddress == nil || len(p.TokenIDs) == 0) {
-			return errors.New("asset_contract_address and token_ids are required if order_by is 'eth_price'")
+			return errx.New("asset_contract_address and token_ids are required if order_by is 'eth_price'")
 		}
 	}
 
 	if p.OrderDirection != nil && !slices.Contains([]string{OrderDirectionAsc, OrderDirectionDesc}, *p.OrderDirection) {
-		return errors.New("invalid order_direction")
+		return errx.New("invalid order_direction")
 	}
 
 	return nil
@@ -197,17 +198,17 @@ type CreateOrderPayload struct {
 
 func (p *CreateOrderPayload) Validate() error {
 	if p.Parameters == nil {
-		return errors.New("invalid parameters")
+		return errx.New("invalid parameters")
 	}
 	if p.Parameters.Offerer == "" {
-		return errors.New("offerer must not be empty")
+		return errx.New("offerer must not be empty")
 	}
 	if len(p.Parameters.Offer) == 0 {
-		return errors.New("offer must not be empty")
+		return errx.New("offer must not be empty")
 	}
 	for _, o := range p.Parameters.Offer {
 		if o == nil {
-			return errors.New("offer must not be nil")
+			return errx.New("offer must not be nil")
 		}
 		if err := o.Validate(); err != nil {
 			return err
@@ -215,7 +216,7 @@ func (p *CreateOrderPayload) Validate() error {
 	}
 	for _, c := range p.Parameters.Consideration {
 		if c == nil {
-			return errors.New("consideration must not be nil")
+			return errx.New("consideration must not be nil")
 		}
 		if err := c.Validate(); err != nil {
 			return err
@@ -230,29 +231,29 @@ func (p *CreateOrderPayload) Validate() error {
 	}
 
 	if p.Parameters.OrderType < 0 {
-		return errors.New("invalid orderType")
+		return errx.New("invalid orderType")
 	}
 	if p.Parameters.Zone == "" {
-		return errors.New("zone must not be empty")
+		return errx.New("zone must not be empty")
 	}
 	if p.Parameters.ZoneHash == "" {
-		return errors.New("zoneHash must not be empty")
+		return errx.New("zoneHash must not be empty")
 	}
 	if p.Parameters.Salt == "" {
-		return errors.New("salt must not be empty")
+		return errx.New("salt must not be empty")
 	}
 	if p.Parameters.ConduitKey == "" {
-		return errors.New("conduitKey must not be empty")
+		return errx.New("conduitKey must not be empty")
 	}
 	if p.Parameters.Counter == nil {
-		return errors.New("counter must not be empty")
+		return errx.New("counter must not be empty")
 	}
 
 	if p.Signature == "" {
-		return errors.New("signature must not be empty")
+		return errx.New("signature must not be empty")
 	}
 	if p.ProtocolAddress == "" {
-		return errors.New("protocol_address must not be empty")
+		return errx.New("protocol_address must not be empty")
 	}
 
 	return nil
@@ -283,10 +284,10 @@ type GetAllListingsByCollectionPayload struct {
 
 func (p *GetAllListingsByCollectionPayload) Validate() error {
 	if p.CollectionSlug == "" {
-		return errors.New("illegal arguments: collection slug must not be empty")
+		return errx.New("illegal arguments: collection slug must not be empty")
 	}
 	if p.Limit < 0 || p.Limit > 100 {
-		return errors.New("illegal arguments: limit must be between 0 and 100")
+		return errx.New("illegal arguments: limit must be between 0 and 100")
 	}
 
 	return nil

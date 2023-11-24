@@ -2,11 +2,11 @@ package openseamodels
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/openseaapiutils"
 )
@@ -137,12 +137,12 @@ func (t *FulfillmentTransaction) ParseInputDataToOrder() (*OrderInputData, error
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	order := new(OrderInputData)
 	if err = json.Unmarshal(data, order); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return order, nil
@@ -155,12 +155,12 @@ func (t *FulfillmentTransaction) ParseInputDataToBasicOrder() (p *InputDataBasic
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(InputDataBasicOrderParameters)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -173,12 +173,12 @@ func (t *FulfillmentTransaction) ParseInputDataToAdvancedOrder() (p *AdvancedOrd
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(AdvancedOrderInputData)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -191,12 +191,12 @@ func (t *FulfillmentTransaction) ParseInputDataToAvailableOrders() (p *Available
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(AvailableOrdersInputData)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -209,12 +209,12 @@ func (t *FulfillmentTransaction) ParseInputDataToAvailableAdvancedOrders() (p *A
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(AvailableAdvancedOrdersInputData)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -227,12 +227,12 @@ func (t *FulfillmentTransaction) ParseInputDataToMatchOrders() (p *MatchOrdersIn
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(MatchOrdersInputData)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -245,12 +245,12 @@ func (t *FulfillmentTransaction) ParseInputDataToMatchAdvancedOrders() (p *Match
 
 	data, err := json.Marshal(t.InputData)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal input data: %w", err)
+		return nil, errx.Wrap(err, "marshal input data")
 	}
 
 	p = new(MatchAdvancedOrdersInputData)
 	if err = json.Unmarshal(data, p); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal input data: %w", err)
+		return nil, errx.Wrap(err, "unmarshal input data")
 	}
 
 	return p, nil
@@ -282,28 +282,28 @@ type FulfillOfferPayload struct {
 
 func (p *FulfillOfferPayload) Validate() error {
 	if p.Offer == nil || p.Fulfiller == nil || p.Consideration == nil {
-		return errors.New("illegal arguments: nil")
+		return errx.New("illegal arguments: nil")
 	}
 
 	if p.Offer.Hash == "" {
-		return errors.New("hash must not be empty")
+		return errx.New("hash must not be empty")
 	}
 	if p.Offer.Chain == "" {
-		return errors.New("chain must not be empty")
+		return errx.New("chain must not be empty")
 	}
 	if p.Offer.ProtocolAddress == "" {
-		return errors.New("protocol_address must not be empty")
+		return errx.New("protocol_address must not be empty")
 	}
 
 	if p.Fulfiller.Address == "" {
-		return errors.New("fulfiller address must not be empty")
+		return errx.New("fulfiller address must not be empty")
 	}
 
 	if p.Consideration.AssetContractAddress.String() == "" {
-		return errors.New("consideration asset_contract_address must not be empty")
+		return errx.New("consideration asset_contract_address must not be empty")
 	}
 	if p.Consideration.TokenID == "" {
-		return errors.New("consideration token_id must not be empty")
+		return errx.New("consideration token_id must not be empty")
 	}
 
 	return nil

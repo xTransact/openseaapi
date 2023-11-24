@@ -1,12 +1,12 @@
 package openseamodels
 
 import (
-	"errors"
 	"net/url"
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/shopspring/decimal"
+	"github.com/xTransact/errx/v2"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaenums"
@@ -80,7 +80,7 @@ type CollectionPayload struct {
 
 func (p *CollectionPayload) Validate() error {
 	if p.CollectionSlug == "" {
-		return errors.New("collection_slug must not be empty")
+		return errx.New("collection_slug must not be empty")
 	}
 	return p.BaseQueryParams.Validate()
 }
@@ -102,7 +102,7 @@ func (p *ListCollectionsPayload) Validate() error {
 	}
 
 	if p.Limit != 0 && (p.Limit < 1 || p.Limit > 100) {
-		return errors.New("limit must be between 0 and 100")
+		return errx.New("limit must be between 0 and 100")
 	}
 
 	return nil
