@@ -16,7 +16,7 @@ require (
 	github.com/klauspost/compress v1.15.15 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/refraction-networking/utls v1.3.2 // indirect
-	github.com/xTransact/errx/v2 v2.1.1 // indirect
+	github.com/xTransact/errx/v2 v2.1.2 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
 	golang.org/x/net v0.10.0 // indirect

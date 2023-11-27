@@ -32,6 +32,8 @@ github.com/xTransact/errx/v2 v2.0.0 h1:Yb7c218UFBBJxg8i5TirmHLMVDQYgQZtBWJzfoo9e
 github.com/xTransact/errx/v2 v2.0.0/go.mod h1:MjfijmrkTwpp6bx4Z1M6QLkZlmvW6gIh1TPyS/k8myA=
 github.com/xTransact/errx/v2 v2.1.1 h1:GmkW5OrD6sPybICsUAaZIFeUnRK9mnzJ5yDkX1b0Y3I=
 github.com/xTransact/errx/v2 v2.1.1/go.mod h1:bRBHvexwAeALbafctxSl14ZP1NQVGenGWV52MnBXd+U=
+github.com/xTransact/errx/v2 v2.1.2 h1:Re4XJ3LZmahMV6WKHm5fhEINznmUN5zojOQafIq4Y+A=
+github.com/xTransact/errx/v2 v2.1.2/go.mod h1:bRBHvexwAeALbafctxSl14ZP1NQVGenGWV52MnBXd+U=
 golang.org/x/crypto v0.14.0 h1:wBqGXzWJW6m1XrIKlAH0Hs1JJ7+9KBwnIO8v66Q9cHc=
 golang.org/x/crypto v0.14.0/go.mod h1:MVFd36DqK4CsrnJYDkBA3VC4m2GkXAM0PvzMCn4JQf4=
 golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa h1:FRnLl4eNAQl8hwxVVC17teOw8kdjVDVAiFMtgUdTSRQ=
