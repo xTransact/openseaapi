@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/xTransact/errx/v2"
+	"github.com/xTransact/errx/v3"
 )
 
 type BuildOfferPayload struct {

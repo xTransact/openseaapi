@@ -10,7 +10,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	utlsclient "github.com/numblab/utls-client"
-	"github.com/xTransact/errx/v2"
+	"github.com/xTransact/errx/v3"
 
 	"github.com/xTransact/openseaapi/chain"
 	"github.com/xTransact/openseaapi/openseaapiutils"

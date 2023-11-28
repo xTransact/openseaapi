@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"slices"
 
-	"github.com/xTransact/errx/v2"
+	"github.com/xTransact/errx/v3"
 )
 
 type Chain int

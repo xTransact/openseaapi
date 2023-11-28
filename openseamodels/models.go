@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/xTransact/errx/v2"
+	"github.com/xTransact/errx/v3"
 
 	"github.com/xTransact/openseaapi/openseaapiutils"
 	"github.com/xTransact/openseaapi/openseaenums"

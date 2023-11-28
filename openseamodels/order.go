@@ -1,7 +1,7 @@
 package openseamodels
 
 import (
-	"github.com/xTransact/errx/v2"
+	"github.com/xTransact/errx/v3"
 
 	"github.com/xTransact/openseaapi/chain"
 )
