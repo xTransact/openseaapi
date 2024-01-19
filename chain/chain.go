@@ -21,7 +21,6 @@ const (
 	BSC            Chain = 56       // BNB Smart Chain Mainnet
 	BSCTestNet     Chain = 97       // BNB Smart Chain Testnet
 	Ethereum       Chain = 1        // Ethereum Mainnet
-	Goerli         Chain = 5        // Goerli
 	Klaytn         Chain = 8217     // Klaytn Mainnet Cypress
 	Matic          Chain = 137      // Polygon Mainnet
 	Mumbai         Chain = 80001    // Mumbai
@@ -42,7 +41,7 @@ var (
 
 	TestnetChains = []Chain{
 		ArbitrumGoerli, AvalancheFuji, Baobab, BaseGoerli, BSCTestNet,
-		Goerli, OptimismGoerli, Mumbai, Sepolia, Soldev, ZoraTestNet,
+		OptimismGoerli, Mumbai, Sepolia, Soldev, ZoraTestNet,
 	}
 )
 
@@ -77,8 +76,6 @@ func (c Chain) Currency() string {
 	case BSCTestNet:
 		return "tBNB"
 	case Ethereum:
-		return "ETH"
-	case Goerli:
 		return "ETH"
 	case Klaytn:
 		return "KLAY"
@@ -129,8 +126,6 @@ func (c Chain) Name() string {
 		return "BNB Smart Chain Testnet"
 	case Ethereum:
 		return "Ethereum Mainnet"
-	case Goerli:
-		return "Goerli"
 	case Klaytn:
 		return "Klaytn Mainnet Cypress"
 	case Matic:
@@ -168,7 +163,6 @@ var valuesMapping = map[string]Chain{
 	"bsc":             BSC,
 	"bsctestnet":      BSCTestNet,
 	"ethereum":        Ethereum,
-	"goerli":          Goerli,
 	"klaytn":          Klaytn,
 	"matic":           Matic,
 	"mumbai":          Mumbai,
@@ -205,8 +199,6 @@ func (c Chain) Value() string {
 		return "bsctestnet"
 	case Ethereum:
 		return "ethereum"
-	case Goerli:
-		return "goerli"
 	case Klaytn:
 		return "klaytn"
 	case Matic:

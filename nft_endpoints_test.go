@@ -92,7 +92,7 @@ func TestGetGoerliNft(t *testing.T) {
 	const tokenID = "1"
 
 	cli := NewClient()
-	resp, err := cli.GetNft(ctx, chain.Goerli, &openseamodels.GetNftPayload{
+	resp, err := cli.GetNft(ctx, chain.Sepolia, &openseamodels.GetNftPayload{
 		Address:    testCollectionContract,
 		Identifier: tokenID,
 	})

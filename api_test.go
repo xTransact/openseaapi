@@ -29,7 +29,7 @@ func TestGetListings(t *testing.T) {
 
 func TestGetTestListings(t *testing.T) {
 	cli := NewClient()
-	listings, err := cli.GetListings(context.Background(), chain.Goerli, &openseamodels.OrderPayload{
+	listings, err := cli.GetListings(context.Background(), chain.Sepolia, &openseamodels.OrderPayload{
 		AssetContractAddress: openseaapiutils.StringPtr("0xb31d6b5516eed64a874e9f7ab605e359e20b645f"),
 		TokenIDs: []json.Number{
 			"9",
@@ -47,7 +47,7 @@ func TestGetTestListings(t *testing.T) {
 func TestFulfillListings(t *testing.T) {
 	cli := NewClient()
 	// token_id: 10
-	resp, err := cli.FulfillListing(context.Background(), chain.Goerli,
+	resp, err := cli.FulfillListing(context.Background(), chain.Sepolia,
 		"0x39dc941236628a4ddc793a0c49f8065195b52908a98b4e337b6a51ae63965fd2", "0xeFe15c06BAE6bA30b444e6fCD6B94354057fC998")
 	require.NoError(t, err)
 
@@ -59,7 +59,7 @@ func TestFulfillListings(t *testing.T) {
 	fmt.Println()
 
 	// 0.001 WETH: 0x58eae5fa7fe08200c7f0d71cc16fc7cfdffd0cc6c330245eeedf5b789019c85d
-	// resp, err := cli.FulfillListing(context.Background(), chain.Goerli,
+	// resp, err := cli.FulfillListing(context.Background(), chain.Sepolia,
 	// 	"0x58eae5fa7fe08200c7f0d71cc16fc7cfdffd0cc6c330245eeedf5b789019c85d", "0x69493301a10A06679a6771D33E8CDd3a5fdA4dB4")
 	// require.NoError(t, err)
 	//
@@ -71,7 +71,7 @@ func TestFulfillListings(t *testing.T) {
 	// fmt.Println()
 
 	// 0.026  ETH: 0xa57250013724312244772508096cfb4a9f7989985729ec2df6e4e75e29687d86
-	// resp, err = cli.FulfillListing(context.Background(), chain.Goerli,
+	// resp, err = cli.FulfillListing(context.Background(), chain.Sepolia,
 	// 	"0xa57250013724312244772508096cfb4a9f7989985729ec2df6e4e75e29687d86", "0x69493301a10A06679a6771D33E8CDd3a5fdA4dB4")
 	// require.NoError(t, err)
 	//

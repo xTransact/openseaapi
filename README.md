@@ -62,6 +62,6 @@ cli := NewClient(
 // Get account on mainnet by wallet address
 resp, err := cli.GetAccount(ctx, addr)
 
-// Get account on goerli testnet by wallet address
+// Get account on sepolia testnet by wallet address
 resp, err := cli.GetAccount(ctx, addr,UseTestnets())
 ```
