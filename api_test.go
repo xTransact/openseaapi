@@ -48,7 +48,7 @@ func TestFulfillListings(t *testing.T) {
 	cli := NewClient()
 	// token_id: 10
 	resp, err := cli.FulfillListing(context.Background(), chain.Sepolia,
-		"0x39dc941236628a4ddc793a0c49f8065195b52908a98b4e337b6a51ae63965fd2", "0xeFe15c06BAE6bA30b444e6fCD6B94354057fC998")
+		"0x18059f7b861469dd792d08ee4adac3c656b19275cb87e6d0cc2d202d06a29eac", "0xFA8C5a880B5F4a78d6C5Ff0508814caAA5866f85")
 	require.NoError(t, err)
 
 	data, err := json.MarshalIndent(resp, "", "  ")

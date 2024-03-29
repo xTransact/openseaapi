@@ -17,4 +17,8 @@ const (
 	OrderSideBid = "bid"
 )
 
-var SeaportV15Address = common.HexToAddress("0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC")
+var (
+	// Deprecated use v16 instead
+	SeaportV15Address = common.HexToAddress("0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC")
+	SeaportV16Address = common.HexToAddress("0x0000000000000068F116a894984e2DB1123eB395")
+)

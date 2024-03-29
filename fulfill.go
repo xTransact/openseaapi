@@ -30,7 +30,7 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 		Listing: &openseamodels.FulfillOrder{
 			Hash:            orderHash,
 			Chain:           ch.Value(),
-			ProtocolAddress: openseaconsts.SeaportV15Address.String(),
+			ProtocolAddress: openseaconsts.SeaportV16Address.String(),
 		},
 		FulFiller: &openseamodels.Fulfiller{
 			Address: fulfiller,
