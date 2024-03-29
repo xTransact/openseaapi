@@ -49,7 +49,7 @@ An SDK for [OpenSea API](https://docs.opensea.io/reference/api-overview).
 ### Get it
 
 ```shell
-go get -u github.com/reedchan7/openseaapi
+go get -ugithub.com/xTransact/openseaapi
 ```
 
 ### Examples
