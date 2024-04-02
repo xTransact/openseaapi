@@ -87,6 +87,9 @@ type Servicer interface {
 	// FulfillListing retrieves all the information, including signatures, needed to fulfill a listing directly onchain.
 	FulfillListing(ctx context.Context, ch chain.Chain,
 		orderHash, fulfiller string) (resp *openseamodels.FulfillmentDataResponse, err error)
+	// FulfillListingWithProtocolAddress retrieves all the information, including signatures, needed to fulfill a listing directly onchain.
+	FulfillListingWithProtocolAddress(ctx context.Context, ch chain.Chain,
+		orderHash, fulfiller, protocolAddress string) (resp *openseamodels.FulfillmentDataResponse, err error)
 	// FulfillOffer retrieves all the information, including signatures, needed to fulfill an offer directly onchain.
 	FulfillOffer(ctx context.Context, payload *openseamodels.FulfillOfferPayload,
 		opts ...RequestOptionFn) (resp *openseamodels.FulfillmentDataResponse, err error)

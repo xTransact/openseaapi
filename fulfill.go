@@ -22,6 +22,13 @@ import (
 func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 	orderHash, fulfiller string) (resp *openseamodels.FulfillmentDataResponse, err error) {
 
+	return c.FulfillListingWithProtocolAddress(ctx, ch,
+		orderHash, fulfiller, openseaconsts.SeaportV16Address.String())
+}
+
+func (c *client) FulfillListingWithProtocolAddress(ctx context.Context, ch chain.Chain,
+	orderHash, fulfiller, protocolAddress string) (resp *openseamodels.FulfillmentDataResponse, err error) {
+
 	if orderHash == "" || fulfiller == "" || ch < 0 {
 		return nil, errx.New("illegal arguments: nil")
 	}
@@ -30,7 +37,7 @@ func (c *client) FulfillListing(ctx context.Context, ch chain.Chain,
 		Listing: &openseamodels.FulfillOrder{
 			Hash:            orderHash,
 			Chain:           ch.Value(),
-			ProtocolAddress: openseaconsts.SeaportV16Address.String(),
+			ProtocolAddress: protocolAddress,
 		},
 		FulFiller: &openseamodels.Fulfiller{
 			Address: fulfiller,
